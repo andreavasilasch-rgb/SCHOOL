@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A scuola di democrazia — Ripasso interattivo</title>
+<style>
+  :root{
+    --green:#3aaa35; --green-d:#2d8a29; --red:#e2342b; --ink:#1e2430;
+    --muted:#5b6472; --bg:#f4f7f3; --card:#ffffff; --line:#e4e9e2;
+    --chip:#eef6ec; --yellow:#fff7d6; --yellow-b:#f2d873;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       background:var(--bg);color:var(--ink);line-height:1.55}
+  a{color:var(--green-d)}
+  .wrap{max-width:920px;margin:0 auto;padding:0 18px 80px}
+  header.top{background:linear-gradient(135deg,var(--green),var(--green-d));color:#fff;padding:34px 18px 30px}
+  header.top .inner{max-width:920px;margin:0 auto}
+  header.top h1{margin:0 0 4px;font-size:30px;letter-spacing:.3px}
+  header.top .sub{font-size:15px;opacity:.95;margin:0}
+  header.top .book{margin-top:14px;font-size:13px;opacity:.9;border-top:1px solid rgba(255,255,255,.25);padding-top:12px}
+  .toolbar{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line);
+           padding:10px 0;margin-bottom:8px}
+  .toolbar .inner{max-width:920px;margin:0 auto;padding:0 18px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .btn{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:7px 14px;
+       font-size:13px;cursor:pointer;transition:.15s}
+  .btn:hover{border-color:var(--green);color:var(--green-d)}
+  .btn.primary{background:var(--green);color:#fff;border-color:var(--green)}
+  .btn.primary:hover{background:var(--green-d);color:#fff}
+  .progress{margin-left:auto;font-size:13px;color:var(--muted)}
+  .progress b{color:var(--green-d)}
+  .intro{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:14px 0 6px}
+  .intro h2{margin:0 0 8px;font-size:18px}
+  .intro p{margin:6px 0;font-size:14px;color:var(--muted)}
+  .partlabel{margin:26px 0 10px;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--green-d)}
+  .partlabel.eco{color:#c88a12}
+  .chapter{background:var(--card);border:1px solid var(--line);border-radius:14px;margin:12px 0;overflow:hidden;
+           box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .chead{display:flex;align-items:center;gap:14px;padding:16px 18px;cursor:pointer;user-select:none}
+  .chead:hover{background:#fafcf9}
+  .num{flex:none;width:38px;height:38px;border-radius:10px;background:var(--chip);color:var(--green-d);
+       font-weight:700;display:flex;align-items:center;justify-content:center;font-size:16px}
+  .chapter.eco .num{background:#fdf3df;color:#b57d10}
+  .ctitle{flex:1;font-size:17px;font-weight:650}
+  .ctitle small{display:block;font-weight:400;color:var(--muted);font-size:12.5px;margin-top:2px}
+  .chk{flex:none;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+  .chk input{width:17px;height:17px;accent-color:var(--green)}
+  .arrow{flex:none;transition:transform .2s;color:var(--muted);font-size:13px}
+  .chapter.open .arrow{transform:rotate(90deg)}
+  .cbody{display:none;padding:0 18px 20px;border-top:1px solid var(--line)}
+  .chapter.open .cbody{display:block}
+  .sec-h{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--green-d);margin:18px 0 8px}
+  .chapter.eco .sec-h{color:#b57d10}
+  ul.points{margin:0;padding-left:20px}
+  ul.points li{margin:5px 0;font-size:14.5px}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+  .chip{background:var(--chip);color:var(--green-d);border-radius:999px;padding:4px 11px;font-size:12.5px;font-weight:500}
+  .chapter.eco .chip{background:#fdf3df;color:#b57d10}
+  .remember{background:var(--yellow);border:1px solid var(--yellow-b);border-radius:10px;padding:12px 14px;font-size:14px}
+  .remember b{color:#8a6d00}
+  .quiz{margin-top:6px}
+  .q{border:1px solid var(--line);border-radius:10px;margin:8px 0;overflow:hidden}
+  .q .qq{padding:11px 14px;cursor:pointer;font-size:14.5px;font-weight:550;display:flex;gap:10px;align-items:flex-start}
+  .q .qq:hover{background:#fafcf9}
+  .q .qn{flex:none;color:var(--green-d);font-weight:700}
+  .chapter.eco .q .qn{color:#b57d10}
+  .q .aa{display:none;padding:0 14px 12px 38px;font-size:14px;color:#26402a;background:#f3f9f1;border-top:1px dashed var(--line)}
+  .chapter.eco .q .aa{background:#fdf8ee;color:#5b4611}
+  .q.show .aa{display:block;padding-top:10px}
+  .q .aa b{color:var(--green-d)}
+  .chapter.eco .q .aa b{color:#b57d10}
+  .qtools{display:flex;gap:8px;margin:10px 0 2px}
+  .qtools .btn{padding:5px 12px;font-size:12.5px}
+  footer{max-width:920px;margin:30px auto 0;padding:16px 18px;color:var(--muted);font-size:12px;text-align:center}
+  .tip{font-size:12.5px;color:var(--muted);margin-top:4px}
+  @media(max-width:560px){header.top h1{font-size:23px}.ctitle{font-size:15px}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="inner">
+    <h1>A scuola di democrazia</h1>
+    <p class="sub">Ripasso interattivo · Lezioni di Diritto ed Economia · 1° biennio</p>
+    <div class="book">G. Zagrebelsky · C. Trucco · G. Bacceli — Le Monnier / Mondadori Education, 3ª edizione (2023) · 15 capitoli · sintesi, parole chiave e 10 domande con risposte per ogni capitolo.</div>
+  </div>
+</header>
+
+<div class="toolbar">
+  <div class="inner">
+    <button class="btn primary" id="expandAll">Apri tutti</button>
+    <button class="btn" id="collapseAll">Chiudi tutti</button>
+    <button class="btn" id="hideAllAns">Nascondi tutte le risposte</button>
+    <span class="progress">Studiati: <b id="doneCount">0</b>/15</span>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="intro">
+    <h2>Come usare questo ripasso</h2>
+    <p>Il libro è diviso in <b>15 capitoli</b>: i primi 9 di <b>Diritto</b>, gli ultimi 6 di <b>Economia</b>. Clicca su un capitolo per aprirlo.</p>
+    <p>Per ogni capitolo trovi: <b>Sintesi</b> (i punti chiave), <b>Parole chiave</b> da sapere a memoria, un riquadro giallo <b>“Come ricordarlo”</b> con trucchi mnemonici, e <b>10 domande</b>. Clicca una domanda per vedere la risposta.</p>
+    <p class="tip">Metodo consigliato per il test: leggi la sintesi → ripeti le parole chiave ad alta voce → rispondi alle 10 domande <i>senza</i> guardare, poi controlla. Spunta ✓ il capitolo quando lo sai. <span style="color:#c33">Nota:</span> i titoli seguono il programma standard di Diritto ed Economia; l'ordine può variare di poco dalla tua edizione cartacea.</p>
+  </div>
+  <div id="app"></div>
+</div>
+
+<footer>
+  Materiale di studio generato per il ripasso personale · basato su “A scuola di democrazia” (Zagrebelsky, Trucco, Bacceli).
+</footer>
+
+<script>
+const DATA=[
+{part:"DIRITTO",id:1,title:"Le norme e il diritto",sub:"Regole sociali e giuridiche, caratteri della norma",
+ sintesi:[
+  "Ogni società ha bisogno di regole per la convivenza: «ubi societas, ibi ius» (dove c'è società c'è diritto).",
+  "Le norme sociali (morali, religiose, del costume) hanno sanzioni non organizzate (rimorso, disapprovazione).",
+  "La norma giuridica è posta dallo Stato, vale per tutti ed è dotata di una sanzione organizzata e coattiva (imposta anche con la forza).",
+  "I quattro caratteri della norma giuridica sono: generalità, astrattezza, obbligatorietà, coattività.",
+  "Diritto oggettivo = insieme delle norme (l'ordinamento); diritto soggettivo = potere/pretesa del singolo tutelato dalla legge.",
+  "Diritto positivo = il diritto vigente in un dato luogo e tempo. Si distingue in diritto pubblico (Stato ed enti pubblici) e privato (rapporti tra privati).",
+  "La sanzione può essere civile (risarcimento, nullità), penale (multa, reclusione) o amministrativa."],
+ parole:["norma giuridica","sanzione","coattività","generalità","astrattezza","diritto oggettivo","diritto soggettivo","diritto pubblico/privato","ordinamento giuridico"],
+ ricorda:"I 4 caratteri = <b>G.A.O.C.</b>: Generalità, Astrattezza, Obbligatorietà, Coattività. Frase-chiave: «<i>ubi societas, ibi ius</i>». Oggettivo = le regole; Soggettivo = il mio diritto.",
+ domande:[
+  ["Che cosa significa «ubi societas, ibi ius»?","Dove c'è una società c'è il diritto: ogni gruppo umano ha bisogno di regole."],
+  ["Qual è la differenza tra norma sociale e norma giuridica?","La norma giuridica è posta dallo Stato ed è dotata di sanzione organizzata e coattiva; la norma sociale no."],
+  ["Quali sono i quattro caratteri della norma giuridica?","Generalità, astrattezza, obbligatorietà e coattività."],
+  ["Cosa vuol dire che la norma è «generale»?","È rivolta a tutti i consociati (o a categorie di persone), non a un singolo individuo."],
+  ["Cosa vuol dire che la norma è «astratta»?","Regola situazioni-tipo ipotetiche, non un singolo caso concreto già avvenuto."],
+  ["Cos'è la coattività?","La possibilità dello Stato di imporre l'osservanza della norma anche con la forza."],
+  ["Differenza tra diritto oggettivo e diritto soggettivo?","Oggettivo = l'insieme delle norme; soggettivo = il potere/pretesa del singolo tutelato dalla norma."],
+  ["Cos'è il diritto positivo?","Il diritto «posto», cioè vigente in un determinato luogo e momento storico."],
+  ["Che differenza c'è tra diritto pubblico e diritto privato?","Il pubblico regola lo Stato e i suoi rapporti con i cittadini; il privato regola i rapporti tra soggetti su un piano di parità."],
+  ["Cos'è la sanzione e quali tipi esistono?","È la conseguenza sfavorevole per chi viola la norma; può essere civile, penale o amministrativa."]]},
+
+{part:"DIRITTO",id:2,title:"Le fonti del diritto",sub:"Gerarchia, entrata in vigore, interpretazione",
+ sintesi:[
+  "Le fonti del diritto sono gli atti e i fatti che producono norme giuridiche.",
+  "Fonti di produzione = creano le norme; fonti di cognizione = le rendono conoscibili (es. la Gazzetta Ufficiale).",
+  "Gerarchia delle fonti (dall'alto): 1) Costituzione e leggi costituzionali; 2) fonti dell'UE e internazionali; 3) leggi ordinarie e atti aventi forza di legge (decreto legge, decreto legislativo); 4) leggi regionali; 5) regolamenti; 6) usi e consuetudini.",
+  "Principio gerarchico: una fonte inferiore non può contrastare una superiore (altrimenti è illegittima).",
+  "Entrata in vigore: dopo la pubblicazione c'è la vacatio legis (di norma 15 giorni). La legge non è retroattiva (in campo penale mai a sfavore).",
+  "Abrogazione (fine dell'efficacia): espressa, tacita o per referendum abrogativo.",
+  "Interpretazione: letterale, sistematica, autentica. L'analogia colma le lacune, ma è vietata nel diritto penale."],
+ parole:["fonti di produzione/cognizione","gerarchia delle fonti","vacatio legis","entrata in vigore","abrogazione","retroattività","consuetudine","Gazzetta Ufficiale","analogia"],
+ ricorda:"Immagina una <b>piramide</b>: in cima la Costituzione, alla base gli usi. «<b>15 giorni</b>» = vacatio legis. Regola d'oro: il piccolo (fonte inferiore) non comanda sul grande (fonte superiore).",
+ domande:[
+  ["Cosa sono le fonti del diritto?","Gli atti e i fatti idonei a produrre norme giuridiche."],
+  ["Differenza tra fonti di produzione e di cognizione?","Le fonti di produzione creano le norme; quelle di cognizione le rendono conoscibili (es. Gazzetta Ufficiale)."],
+  ["Qual è la fonte più alta nella gerarchia?","La Costituzione, insieme alle leggi costituzionali."],
+  ["Cosa afferma il principio gerarchico?","Una fonte inferiore non può contrastare una fonte superiore."],
+  ["Cos'è la vacatio legis?","L'intervallo (di norma 15 giorni) tra la pubblicazione e l'entrata in vigore della legge."],
+  ["Cosa significa che la legge non è retroattiva?","Non si applica a fatti avvenuti prima della sua entrata in vigore."],
+  ["Cos'è l'abrogazione?","La cessazione dell'efficacia di una norma; può essere espressa, tacita o per referendum."],
+  ["Cos'è la consuetudine?","Una fonte non scritta: la ripetizione costante di un comportamento ritenuto obbligatorio."],
+  ["Cos'è l'analogia?","Applicare a un caso non previsto la norma di un caso simile; è vietata nel diritto penale."],
+  ["Quali sono gli atti aventi forza di legge?","Il decreto legge e il decreto legislativo, emanati dal Governo."]]},
+
+{part:"DIRITTO",id:3,title:"I soggetti del diritto",sub:"Persone fisiche e giuridiche, capacità",
+ sintesi:[
+  "Soggetto di diritto = chi può essere titolare di diritti e doveri: persone fisiche (esseri umani) e persone giuridiche (organizzazioni).",
+  "Capacità giuridica: attitudine a essere titolari di diritti e doveri; si acquista con la nascita e si perde con la morte.",
+  "Capacità di agire: attitudine a compiere validamente atti giuridici (esercitare i diritti); si acquista con la maggiore età, a 18 anni.",
+  "Cause di incapacità di agire: minore età, interdizione (infermità mentale abituale), inabilitazione (infermità meno grave); l'emancipazione dà capacità parziale al minore sposato.",
+  "L'amministrazione di sostegno protegge chi ha ridotta autonomia, con un amministratore che lo assiste.",
+  "Domicilio = sede principale di affari e interessi; residenza = luogo di dimora abituale; dimora = luogo temporaneo.",
+  "Le persone giuridiche hanno autonomia patrimoniale: il loro patrimonio è distinto da quello dei membri (es. associazioni, fondazioni, società)."],
+ parole:["persona fisica/giuridica","capacità giuridica","capacità di agire","maggiore età","interdizione","inabilitazione","emancipazione","amministrazione di sostegno","domicilio/residenza/dimora","autonomia patrimoniale"],
+ ricorda:"<b>Giuridica</b> = <i>avere</i> diritti (dalla nascita). <b>Di agire</b> = <i>usarli</i> validamente (a 18 anni). Sede: <b>D</b>omicilio=affari, <b>R</b>esidenza=vivi abitualmente, <b>D</b>imora=stai per poco.",
+ domande:[
+  ["Chi è un soggetto di diritto?","Chi può essere titolare di diritti e doveri: le persone fisiche e le persone giuridiche."],
+  ["Cos'è la capacità giuridica e quando si acquista?","L'attitudine a essere titolari di diritti e doveri; si acquista con la nascita."],
+  ["Cos'è la capacità di agire e quando si acquista?","L'attitudine a compiere validamente atti giuridici; si acquista a 18 anni."],
+  ["Che differenza c'è tra capacità giuridica e capacità di agire?","La prima è «avere» i diritti (dalla nascita), la seconda è «esercitarli» validamente (a 18 anni)."],
+  ["Cos'è l'interdizione?","Il provvedimento che priva della capacità di agire chi è in abituale e grave infermità mentale."],
+  ["Cos'è l'inabilitazione?","Una limitazione parziale della capacità di agire (infermità meno grave, prodigalità, ecc.)."],
+  ["Cos'è l'emancipazione?","L'acquisto parziale della capacità di agire da parte del minore che si sposa."],
+  ["Cos'è l'amministrazione di sostegno?","Una misura di protezione per chi ha ridotta autonomia: un amministratore lo assiste negli atti."],
+  ["Differenza tra residenza e domicilio?","Residenza = luogo di dimora abituale; domicilio = sede principale dei propri affari e interessi."],
+  ["Cosa distingue la persona giuridica?","Ha autonomia patrimoniale: il suo patrimonio è distinto da quello delle persone che la compongono."]]},
+
+{part:"DIRITTO",id:4,title:"Lo Stato e i suoi elementi",sub:"Popolo, territorio, sovranità, cittadinanza",
+ sintesi:[
+  "Lo Stato è una comunità di persone (popolo) stanziata su un territorio e organizzata sotto un potere sovrano.",
+  "I tre elementi costitutivi sono: popolo, territorio e sovranità.",
+  "Popolo = insieme dei cittadini; popolazione = tutti coloro che si trovano sul territorio; nazione = comunità unita da lingua, cultura e storia.",
+  "La cittadinanza si acquista per ius sanguinis (da genitori cittadini), ius soli (nascita sul territorio, limitato in Italia), matrimonio o naturalizzazione.",
+  "Il territorio comprende terraferma, mare territoriale, spazio aereo e sottosuolo (più navi, aerei e sedi diplomatiche).",
+  "La sovranità è il potere supremo e indipendente dello Stato: interna (sui cittadini nel territorio) ed esterna (indipendenza dagli altri Stati).",
+  "Chi non ha la cittadinanza di alcuno Stato è detto apolide."],
+ parole:["popolo","popolazione","nazione","cittadinanza","ius sanguinis","ius soli","territorio","mare territoriale","sovranità interna/esterna","apolide"],
+ ricorda:"3 elementi = <b>Po-Te-So</b>: <b>Po</b>polo, <b>Te</b>rritorio, <b>So</b>vranità. Cittadinanza: <i>sanguinis</i> = sangue (genitori), <i>soli</i> = suolo (nascita nel luogo).",
+ domande:[
+  ["Cos'è lo Stato?","Una comunità di persone stanziata su un territorio e organizzata sotto un potere sovrano."],
+  ["Quali sono i tre elementi costitutivi dello Stato?","Popolo, territorio e sovranità."],
+  ["Differenza tra popolo e popolazione?","Il popolo è l'insieme dei cittadini; la popolazione è chiunque si trovi sul territorio."],
+  ["Cos'è la nazione?","Una comunità di persone unite da lingua, cultura, tradizioni e storia comuni."],
+  ["Cosa sono lo ius sanguinis e lo ius soli?","Modi di acquisto della cittadinanza: per discendenza da genitori cittadini (sanguinis) o per nascita sul territorio (soli)."],
+  ["Cosa comprende il territorio dello Stato?","Terraferma, mare territoriale, spazio aereo e sottosuolo (e navi, aerei, sedi diplomatiche)."],
+  ["Cos'è la sovranità?","Il potere supremo e indipendente dello Stato."],
+  ["Differenza tra sovranità interna ed esterna?","Interna = potere sui cittadini nel territorio; esterna = indipendenza rispetto agli altri Stati."],
+  ["Chi è l'apolide?","Chi non possiede la cittadinanza di alcuno Stato."],
+  ["Come si può acquistare la cittadinanza italiana oltre che per nascita?","Per matrimonio, per naturalizzazione (residenza prolungata) o per beneficio di legge."]]},
+
+{part:"DIRITTO",id:5,title:"Le forme di Stato e di governo",sub:"Tipi di Stato, monarchia e repubblica, democrazia",
+ sintesi:[
+  "Forma di Stato = rapporto tra lo Stato, il popolo e il territorio (e tra Stato e cittadini). Forma di governo = come è distribuito il potere tra gli organi.",
+  "Forme di Stato nella storia: assoluto, liberale, democratico, socialista, totalitario.",
+  "Lo Stato di diritto sottopone alla legge anche i governanti; lo Stato sociale (welfare) garantisce diritti sociali (salute, istruzione, previdenza).",
+  "Rispetto al territorio lo Stato può essere unitario, federale o regionale: l'Italia è uno Stato regionale.",
+  "Forme di governo: monarchia (assoluta, costituzionale, parlamentare) e repubblica (parlamentare, presidenziale, semipresidenziale). L'Italia è una repubblica parlamentare.",
+  "Democrazia = la sovranità appartiene al popolo; può essere diretta (referendum) o rappresentativa/indiretta (elezioni)."],
+ parole:["forma di Stato","forma di governo","Stato assoluto/liberale/democratico","Stato di diritto","Stato sociale","Stato unitario/federale/regionale","monarchia","repubblica parlamentare/presidenziale","democrazia diretta/rappresentativa"],
+ ricorda:"L'Italia in 5 parole: <b>Repubblica parlamentare, Stato regionale, democratico e di diritto</b>. Forma di <b>STATO</b> = rapporto con i cittadini; forma di <b>GOVERNO</b> = rapporto tra gli organi.",
+ domande:[
+  ["Differenza tra forma di Stato e forma di governo?","La forma di Stato riguarda il rapporto tra Stato e cittadini/territorio; la forma di governo riguarda la distribuzione del potere tra gli organi."],
+  ["Cos'è lo Stato assoluto?","La forma in cui il sovrano detiene tutto il potere senza limiti."],
+  ["Cos'è lo Stato di diritto?","Uno Stato in cui anche i governanti sono sottoposti alla legge."],
+  ["Cos'è lo Stato sociale (welfare state)?","Uno Stato che garantisce a tutti i diritti sociali: istruzione, salute, previdenza."],
+  ["Cos'è lo Stato totalitario?","Uno Stato che controlla ogni aspetto della vita, senza libertà né pluralismo."],
+  ["Che tipo di Stato è l'Italia rispetto al territorio?","Uno Stato regionale, con il potere ripartito tra Stato e Regioni."],
+  ["Differenza tra repubblica parlamentare e presidenziale?","Nella parlamentare il Governo dipende dalla fiducia del Parlamento; nella presidenziale il Presidente, eletto dal popolo, è capo dello Stato e del governo."],
+  ["Che forma di governo ha l'Italia?","Una repubblica parlamentare."],
+  ["Differenza tra democrazia diretta e rappresentativa?","Nella diretta il popolo decide direttamente (referendum); nella rappresentativa elegge dei rappresentanti."],
+  ["A chi appartiene la sovranità in una democrazia?","Al popolo (art. 1 della Costituzione)."]]},
+
+{part:"DIRITTO",id:6,title:"La Costituzione: nascita e principi fondamentali",sub:"Dallo Statuto Albertino agli artt. 1-12",
+ sintesi:[
+  "Lo Statuto Albertino (1848) era una costituzione flessibile e «ottriata» (concessa dal re).",
+  "Il 2 giugno 1946, con referendum, gli italiani scelsero la Repubblica ed elessero l'Assemblea Costituente.",
+  "La Costituzione entrò in vigore il 1° gennaio 1948. È scritta, rigida (modificabile solo con l'art. 138), lunga, votata e compromissoria.",
+  "Struttura: Principi fondamentali (artt. 1-12), Parte I «Diritti e doveri dei cittadini», Parte II «Ordinamento della Repubblica»; 139 articoli.",
+  "Art. 1: l'Italia è una Repubblica democratica fondata sul lavoro, la sovranità appartiene al popolo. Art. 2: diritti inviolabili e doveri di solidarietà.",
+  "Art. 3: uguaglianza formale (tutti uguali davanti alla legge) e sostanziale (lo Stato rimuove gli ostacoli economico-sociali).",
+  "Art. 11: l'Italia ripudia la guerra come strumento di offesa. Altri principi: lavoro (4), autonomie (5), minoranze (6), Stato e confessioni (7-8), cultura e ricerca (9)."],
+ parole:["Statuto Albertino","ottriata","costituzione flessibile/rigida","Assemblea Costituente","2 giugno 1946","1° gennaio 1948","art. 138","uguaglianza formale/sostanziale","ripudio della guerra (art. 11)"],
+ ricorda:"Le date: «<b>1946 scelgo</b> (referendum), <b>1947 scrivo</b> (Costituente), <b>1948 vivo</b> (in vigore)». La Costituzione è <b>rigida e scritta</b>. Ricorda: <b>art. 11 = ripudio della guerra</b>.",
+ domande:[
+  ["Cos'era lo Statuto Albertino?","La costituzione del 1848 (Regno di Sardegna, poi d'Italia): flessibile e concessa dal re (ottriata)."],
+  ["Cosa si decise con il referendum del 2 giugno 1946?","La scelta tra monarchia e repubblica: vinse la repubblica; si elesse l'Assemblea Costituente."],
+  ["Quando è entrata in vigore la Costituzione?","Il 1° gennaio 1948."],
+  ["Cosa significa che la Costituzione è «rigida»?","Può essere modificata solo con una procedura aggravata (art. 138), non con una legge ordinaria."],
+  ["Come è strutturata la Costituzione?","Principi fondamentali (artt. 1-12), Parte I (diritti e doveri), Parte II (ordinamento della Repubblica); 139 articoli."],
+  ["Cosa afferma l'art. 1?","L'Italia è una Repubblica democratica fondata sul lavoro; la sovranità appartiene al popolo."],
+  ["Differenza tra uguaglianza formale e sostanziale (art. 3)?","Formale: tutti uguali davanti alla legge; sostanziale: lo Stato rimuove gli ostacoli economico-sociali all'uguaglianza."],
+  ["Cosa afferma l'art. 11?","L'Italia ripudia la guerra come strumento di offesa e come mezzo di risoluzione delle controversie internazionali."],
+  ["Cosa garantisce l'art. 2?","I diritti inviolabili dell'uomo e i doveri inderogabili di solidarietà politica, economica e sociale."],
+  ["Perché la Costituzione è detta «compromissoria»?","Perché nacque dall'accordo tra forze politiche diverse: cattolici, socialisti/comunisti e liberali."]]},
+
+{part:"DIRITTO",id:7,title:"I diritti e i doveri dei cittadini",sub:"Parte I della Costituzione (artt. 13-54)",
+ sintesi:[
+  "La Parte I si divide in rapporti civili (13-28), etico-sociali (29-34), economici (35-47) e politici (48-54).",
+  "Rapporti civili: libertà personale (13), libertà di domicilio (14) e di corrispondenza (15), circolazione (16), riunione (17), associazione (18), libertà religiosa (19), manifestazione del pensiero (21).",
+  "Garanzie penali (art. 27): responsabilità penale personale, presunzione di non colpevolezza, pene che tendono alla rieducazione.",
+  "Rapporti etico-sociali: famiglia (29-31), salute come diritto fondamentale (32), istruzione: scuola aperta a tutti, obbligatoria e gratuita (33-34).",
+  "Rapporti economici: tutela del lavoro (35), retribuzione equa (36), parità di genere (37), assistenza e previdenza (38), sindacati (39), sciopero (40), libera iniziativa economica (41), proprietà (42).",
+  "Rapporti politici: diritto di voto personale, uguale, libero e segreto (48); libertà dei partiti (49).",
+  "Doveri: fedeltà alla Repubblica (54), difesa della patria (52), contribuire alle spese pubbliche secondo la capacità contributiva (53)."],
+ parole:["rapporti civili/etico-sociali/economici/politici","libertà personale (13)","manifestazione del pensiero (21)","diritto alla salute (32)","diritto all'istruzione (34)","diritto di voto (48)","doveri (52-53-54)"],
+ ricorda:"I 4 gruppi di rapporti = <b>C-E-E-P</b>: Civili, Etico-sociali, Economici, Politici. Il voto (art. 48) è <b>P.U.L.S.</b>: Personale, Uguale, Libero, Segreto. Salute = art. 32, Scuola = art. 34.",
+ domande:[
+  ["In quali quattro gruppi si dividono i rapporti della Parte I?","Rapporti civili, etico-sociali, economici e politici."],
+  ["Cosa tutela l'art. 13?","La libertà personale, dichiarata inviolabile."],
+  ["Cosa afferma l'art. 21?","La libertà di manifestazione del pensiero con la parola, lo scritto e ogni mezzo di diffusione."],
+  ["Come è definita la salute nell'art. 32?","Fondamentale diritto dell'individuo e interesse della collettività."],
+  ["Cosa prevede l'art. 34 sull'istruzione?","La scuola è aperta a tutti; l'istruzione inferiore è obbligatoria e gratuita."],
+  ["Quali caratteri ha il voto secondo l'art. 48?","È personale, uguale, libero e segreto."],
+  ["Cosa afferma l'art. 41?","La libertà di iniziativa economica privata, che però non può svolgersi in contrasto con l'utilità sociale."],
+  ["Cosa stabilisce l'art. 53 sui doveri?","Tutti devono contribuire alle spese pubbliche in base alla capacità contributiva, con criterio di progressività."],
+  ["Quali sono i principali doveri costituzionali?","La fedeltà alla Repubblica, la difesa della patria e il pagamento dei tributi."],
+  ["Cosa garantisce l'art. 27 in materia penale?","La responsabilità penale è personale, l'imputato non è colpevole fino a condanna definitiva e le pene tendono alla rieducazione."]]},
+
+{part:"DIRITTO",id:8,title:"L'ordinamento della Repubblica",sub:"Parlamento, Governo, Presidente, Magistratura, Corte",
+ sintesi:[
+  "Vale la separazione dei poteri: legislativo (Parlamento), esecutivo (Governo), giudiziario (Magistratura), più gli organi di garanzia (Presidente della Repubblica e Corte costituzionale).",
+  "Il Parlamento è bicamerale: Camera dei deputati (400) e Senato (200). Ha funzione legislativa, di controllo sul Governo e di indirizzo politico.",
+  "Il Governo è formato dal Presidente del Consiglio e dai ministri (Consiglio dei ministri); esercita il potere esecutivo e deve avere la fiducia del Parlamento. Può emanare decreti legge e decreti legislativi.",
+  "Il Presidente della Repubblica è il capo dello Stato e rappresenta l'unità nazionale; è eletto dal Parlamento in seduta comune (con i delegati regionali) per 7 anni. Promulga le leggi, nomina il Governo, può sciogliere le Camere, comanda le forze armate, presiede il CSM.",
+  "La Magistratura amministra la giustizia in nome del popolo, è autonoma e indipendente (governata dal CSM); i giudici sono soggetti solo alla legge. Ci sono tre gradi di giudizio.",
+  "La Corte costituzionale (15 giudici) giudica la legittimità costituzionale delle leggi."],
+ parole:["separazione dei poteri","Parlamento bicamerale","iter legislativo","rapporto di fiducia","Consiglio dei ministri","Presidente della Repubblica","promulgazione","Magistratura","CSM","Corte costituzionale","gradi di giudizio"],
+ ricorda:"3 poteri = <b>L-E-G</b>: Legislativo, Esecutivo, Giudiziario. Numeri: Presidente della Repubblica <b>7 anni</b>, Corte costituzionale <b>15 giudici</b>, Camera <b>400</b> / Senato <b>200</b>.",
+ domande:[
+  ["Quali sono i tre poteri dello Stato?","Legislativo (Parlamento), esecutivo (Governo) e giudiziario (Magistratura)."],
+  ["Da quali organi è composto il Parlamento?","Dalla Camera dei deputati e dal Senato della Repubblica (bicameralismo)."],
+  ["Quali sono le funzioni del Parlamento?","Legislativa (fare le leggi), di controllo sul Governo e di indirizzo politico."],
+  ["Da chi è composto il Governo?","Dal Presidente del Consiglio e dai ministri, che formano il Consiglio dei ministri."],
+  ["Cos'è il rapporto di fiducia?","Il Governo deve ottenere e conservare la fiducia del Parlamento per restare in carica."],
+  ["Da chi e per quanti anni è eletto il Presidente della Repubblica?","Dal Parlamento in seduta comune con i delegati regionali, per 7 anni."],
+  ["Quali sono alcune funzioni del Presidente della Repubblica?","Promulga le leggi, nomina il Governo, può sciogliere le Camere, comanda le forze armate, presiede il CSM."],
+  ["Cosa significa che la magistratura è autonoma e indipendente?","I giudici sono soggetti soltanto alla legge e sono governati dal CSM, non dagli altri poteri."],
+  ["Quanti sono i gradi di giudizio?","Tre: primo grado, appello e Cassazione."],
+  ["Di cosa si occupa la Corte costituzionale?","Giudica la legittimità costituzionale delle leggi; è composta da 15 giudici."]]},
+
+{part:"DIRITTO",id:9,title:"L'Unione Europea e la comunità internazionale",sub:"Tappe dell'integrazione, istituzioni UE, ONU",
+ sintesi:[
+  "Dopo la Seconda guerra mondiale inizia l'integrazione europea: CECA (1951), CEE ed Euratom con i Trattati di Roma (1957).",
+  "Il Trattato di Maastricht (1992) istituisce l'Unione Europea e la cittadinanza europea; il Trattato di Lisbona (2007) ne aggiorna il funzionamento.",
+  "Obiettivi: pace, mercato unico e libera circolazione di persone, merci, servizi e capitali (le «quattro libertà»); moneta unica, l'euro (contante dal 2002).",
+  "Istituzioni: Parlamento europeo (eletto dai cittadini), Consiglio europeo (capi di Stato e di governo, indirizzo), Consiglio dell'UE (ministri), Commissione europea (esecutivo, propone le leggi), Corte di giustizia, BCE.",
+  "Fonti UE: regolamenti (direttamente applicabili) e direttive (obiettivi che gli Stati devono recepire). Il diritto UE prevale su quello nazionale in caso di contrasto.",
+  "Nella comunità internazionale l'ONU (1945) opera per la pace e la sicurezza e per la tutela dei diritti umani."],
+ parole:["CECA","Trattati di Roma","Maastricht","Lisbona","mercato unico","quattro libertà","euro","cittadinanza europea","Parlamento europeo","Commissione","regolamento/direttiva","ONU"],
+ ricorda:"Tappe a memoria: «<b>51 CECA · 57 Roma · 92 Maastricht · 02 euro</b>». <b>Regolamento</b> = valido subito; <b>Direttiva</b> = da recepire. 4 libertà = Persone, Merci, Servizi, Capitali.",
+ domande:[
+  ["Quale fu il primo passo dell'integrazione europea?","La CECA (1951), la Comunità europea del carbone e dell'acciaio."],
+  ["Cosa istituirono i Trattati di Roma del 1957?","La CEE (Comunità economica europea) e l'Euratom."],
+  ["Cosa introdusse il Trattato di Maastricht (1992)?","L'Unione Europea, la cittadinanza europea e le basi per la moneta unica."],
+  ["Quali sono le «quattro libertà» del mercato unico?","La libera circolazione di persone, merci, servizi e capitali."],
+  ["Quando è entrato in circolazione l'euro come contante?","Nel 2002 (introdotto come moneta di conto già nel 1999)."],
+  ["Quale istituzione è eletta direttamente dai cittadini europei?","Il Parlamento europeo."],
+  ["Qual è il ruolo della Commissione europea?","È l'organo esecutivo: propone le leggi e vigila sulla loro applicazione."],
+  ["Differenza tra regolamento e direttiva UE?","Il regolamento è direttamente applicabile in tutti gli Stati; la direttiva fissa obiettivi che ogni Stato deve recepire."],
+  ["Il diritto dell'UE prevale su quello nazionale?","Sì: in caso di contrasto prevale il diritto europeo."],
+  ["Cos'è l'ONU e quando è nata?","L'Organizzazione delle Nazioni Unite, nata nel 1945 per mantenere la pace e la sicurezza internazionale."]]},
+
+{part:"ECONOMIA",id:10,title:"L'economia e i bisogni",sub:"Scarsità, bisogni, beni e servizi",
+ sintesi:[
+  "L'economia politica è la scienza sociale che studia come gli uomini usano risorse scarse per soddisfare bisogni illimitati.",
+  "Il problema economico fondamentale è la scarsità: le risorse sono limitate rispetto ai bisogni.",
+  "Il bisogno economico è la sensazione di mancanza di qualcosa a cui si pone rimedio con beni e servizi limitati. Caratteri: illimitatezza, saziabilità, soggettività, variabilità, risorgenza.",
+  "I bisogni si classificano in primari/secondari, individuali/collettivi, presenti/futuri.",
+  "Il bene economico è un mezzo utile, limitato (scarso) e ottenibile con un sacrificio; il bene libero è invece illimitato e gratuito (es. l'aria).",
+  "I beni si classificano in: di consumo/strumentali, durevoli/non durevoli, complementari (usati insieme)/succedanei (sostituibili), materiali/immateriali (servizi).",
+  "L'utilità è la capacità di un bene di soddisfare un bisogno."],
+ parole:["economia politica","scarsità","bisogno economico","illimitatezza","saziabilità","risorgenza","bene economico","bene libero","beni complementari/succedanei","servizio","utilità"],
+ ricorda:"Il problema economico in 4 parole: «<b>bisogni illimitati / risorse scarse</b>». Bene economico = utile + limitato + costoso. <b>Complementari</b> = insieme (auto+benzina); <b>Succedanei</b> = alternativi (burro/margarina).",
+ domande:[
+  ["Cosa studia l'economia politica?","Come gli individui impiegano risorse scarse per soddisfare bisogni illimitati."],
+  ["Qual è il problema economico fondamentale?","La scarsità: le risorse disponibili sono limitate rispetto ai bisogni."],
+  ["Cos'è un bisogno economico?","La sensazione di mancanza di qualcosa a cui si pone rimedio con beni e servizi limitati."],
+  ["Quali sono i principali caratteri dei bisogni?","Illimitatezza, saziabilità, soggettività, variabilità e risorgenza."],
+  ["Cosa sono i bisogni primari e secondari?","I primari sono essenziali alla sopravvivenza (cibo, riparo); i secondari migliorano la qualità della vita (svago)."],
+  ["Cos'è un bene economico?","Un mezzo utile, limitato e ottenibile solo con un sacrificio (un costo)."],
+  ["Differenza tra bene economico e bene libero?","Il bene libero è disponibile senza limiti e gratuitamente (es. l'aria); il bene economico è scarso."],
+  ["Cosa sono i beni complementari?","Beni che devono essere usati insieme per soddisfare un bisogno (es. automobile e carburante)."],
+  ["Cosa sono i beni succedanei (o sostituti)?","Beni che possono sostituirsi l'uno all'altro (es. burro e margarina)."],
+  ["Cos'è l'utilità di un bene?","La capacità del bene di soddisfare un bisogno."]]},
+
+{part:"ECONOMIA",id:11,title:"I soggetti economici e il sistema economico",sub:"Famiglie, imprese, Stato, estero e circuito economico",
+ sintesi:[
+  "Il sistema economico è l'insieme dei soggetti e delle relazioni che regolano produzione, distribuzione, scambio e consumo.",
+  "I soggetti economici sono: le famiglie (consumo e offerta di lavoro/risparmio), le imprese (produzione), lo Stato/settore pubblico (servizi, tasse, spesa) e il resto del mondo (scambi con l'estero).",
+  "Nel circuito economico le famiglie offrono i fattori produttivi alle imprese e ricevono redditi; con i redditi acquistano beni e servizi (spesa). Si distinguono un flusso reale e un flusso monetario, di segno opposto.",
+  "Il reddito delle famiglie si divide in consumo e risparmio. Le imprese combinano i fattori per produrre e cercano il profitto. Lo Stato preleva imposte e fornisce servizi, redistribuendo il reddito.",
+  "I sistemi economici possono essere: liberista/di mercato, collettivista/pianificato, o misto (il modello oggi prevalente, come in Italia)."],
+ parole:["sistema economico","famiglie","imprese","Stato","resto del mondo","circuito economico","flusso reale/monetario","reddito","consumo","risparmio","profitto","sistema misto"],
+ ricorda:"4 soggetti = <b>Famiglie · Imprese · Stato · Estero</b>. Il circuito: le famiglie danno lavoro → ricevono reddito → spendono → le imprese producono. Sistemi: mercato / pianificato / <b>MISTO</b> (Italia).",
+ domande:[
+  ["Cos'è un sistema economico?","L'insieme dei soggetti e delle relazioni che regolano produzione, scambio, distribuzione e consumo."],
+  ["Quali sono i principali soggetti economici?","Le famiglie, le imprese, lo Stato (settore pubblico) e il resto del mondo."],
+  ["Qual è il ruolo economico delle famiglie?","Consumano beni e servizi e offrono i fattori produttivi (lavoro, risparmio)."],
+  ["Qual è il ruolo delle imprese?","Producono beni e servizi combinando i fattori produttivi, allo scopo di ottenere un profitto."],
+  ["Qual è il ruolo economico dello Stato?","Fornisce beni e servizi pubblici, preleva imposte e redistribuisce il reddito."],
+  ["Cos'è il circuito economico?","Lo schema dei flussi (reali e monetari) che collegano famiglie e imprese."],
+  ["Differenza tra flusso reale e flusso monetario?","Il flusso reale è di beni/servizi e fattori; quello monetario è di pagamenti in denaro, in direzione opposta."],
+  ["In cosa si divide il reddito delle famiglie?","In consumo e risparmio."],
+  ["Cos'è un sistema economico misto?","Un sistema in cui operano insieme il mercato e l'intervento pubblico dello Stato."],
+  ["Differenza tra sistema liberista e collettivista?","Nel liberista le decisioni sono affidate al mercato; nel collettivista sono pianificate dallo Stato."]]},
+
+{part:"ECONOMIA",id:12,title:"Il mercato e lo scambio",sub:"Domanda, offerta, prezzo e forme di mercato",
+ sintesi:[
+  "Il mercato è il luogo (anche non fisico) in cui si incontrano la domanda e l'offerta di un bene, da cui si forma il prezzo.",
+  "La domanda è la quantità di un bene che i consumatori vogliono acquistare a un certo prezzo. Legge della domanda: se il prezzo sale, la quantità domandata scende (curva decrescente).",
+  "L'offerta è la quantità che i produttori sono disposti a vendere a un certo prezzo. Legge dell'offerta: se il prezzo sale, la quantità offerta aumenta (curva crescente).",
+  "Il prezzo di equilibrio è quello in cui la quantità domandata è uguale a quella offerta (incrocio delle curve).",
+  "Forme di mercato: concorrenza perfetta (molti venditori, prodotto omogeneo, prezzo «dato»), monopolio (un solo venditore), oligopolio (pochi venditori), concorrenza monopolistica.",
+  "La moneta facilita lo scambio superando i limiti del baratto (la doppia coincidenza dei bisogni)."],
+ parole:["mercato","domanda","offerta","legge della domanda/offerta","prezzo di equilibrio","concorrenza perfetta","monopolio","oligopolio","concorrenza monopolistica","baratto"],
+ ricorda:"Regola: prezzo ↑ → domanda ↓ (compro meno), offerta ↑ (vendo di più). L'<b>equilibrio</b> è dove le due curve si incrociano. Forme: <b>Concorrenza</b> (molti) · <b>Monopolio</b> (1) · <b>Oligopolio</b> (pochi).",
+ domande:[
+  ["Cos'è il mercato in economia?","Il luogo (anche virtuale) in cui si incontrano la domanda e l'offerta di un bene."],
+  ["Cos'è la domanda?","La quantità di un bene che i consumatori vogliono acquistare a un dato prezzo."],
+  ["Cosa afferma la legge della domanda?","Al crescere del prezzo la quantità domandata diminuisce (e viceversa)."],
+  ["Cos'è l'offerta?","La quantità di un bene che i produttori sono disposti a vendere a un dato prezzo."],
+  ["Cosa afferma la legge dell'offerta?","Al crescere del prezzo la quantità offerta aumenta."],
+  ["Cos'è il prezzo di equilibrio?","Il prezzo al quale la quantità domandata è uguale a quella offerta."],
+  ["Cos'è la concorrenza perfetta?","Un mercato con molti venditori e compratori, prodotto omogeneo, in cui nessuno da solo può influenzare il prezzo."],
+  ["Cos'è il monopolio?","Un mercato con un solo venditore, che controlla l'offerta e il prezzo."],
+  ["Cos'è l'oligopolio?","Un mercato dominato da pochi grandi venditori."],
+  ["Perché la moneta è preferibile al baratto?","Perché evita la doppia coincidenza dei bisogni e rende gli scambi più semplici e rapidi."]]},
+
+{part:"ECONOMIA",id:13,title:"La moneta, il credito e l'inflazione",sub:"Funzioni della moneta, banche, potere d'acquisto",
+ sintesi:[
+  "La moneta è un mezzo di pagamento generalmente accettato negli scambi.",
+  "Le funzioni della moneta sono quattro: mezzo di scambio, misura del valore, riserva di valore e mezzo per pagamenti differiti.",
+  "La moneta si è evoluta: moneta-merce, metallica, cartacea, bancaria/scritturale (assegni, bonifici) ed elettronica.",
+  "Il valore della moneta è il suo potere d'acquisto, cioè quanti beni e servizi si possono comprare con essa.",
+  "L'inflazione è l'aumento generale e continuo dei prezzi: riduce il potere d'acquisto della moneta. La deflazione è invece un calo generale e prolungato dei prezzi.",
+  "Il credito è denaro dato in prestito con obbligo di restituzione e pagamento di un interesse.",
+  "Le banche svolgono la funzione di intermediazione: raccolgono il risparmio (depositi) e concedono prestiti. La BCE regola la politica monetaria."],
+ parole:["moneta","funzioni della moneta","moneta scritturale/elettronica","potere d'acquisto","inflazione","deflazione","credito","interesse","banca","intermediazione","BCE"],
+ ricorda:"Le 4 funzioni = <b>Scambio · Misura · Riserva · Pagamento differito</b>. Inflazione: prezzi ↑ → potere d'acquisto ↓ (la moneta «vale meno»). La banca <b>raccoglie depositi e presta</b>.",
+ domande:[
+  ["Cos'è la moneta?","Un mezzo di pagamento accettato da tutti negli scambi."],
+  ["Quali sono le funzioni della moneta?","Mezzo di scambio, misura del valore, riserva di valore e mezzo per pagamenti differiti."],
+  ["Cos'è la moneta scritturale (bancaria)?","La moneta rappresentata dai depositi bancari, movimentata con assegni, bonifici e carte."],
+  ["Cos'è il potere d'acquisto della moneta?","La quantità di beni e servizi che si possono comprare con una determinata somma."],
+  ["Cos'è l'inflazione?","L'aumento generale e continuo del livello dei prezzi."],
+  ["Che effetto ha l'inflazione sulla moneta?","Ne riduce il potere d'acquisto: con la stessa somma si comprano meno beni."],
+  ["Cos'è la deflazione?","La diminuzione generale e prolungata del livello dei prezzi."],
+  ["Cos'è il credito?","Denaro dato in prestito con l'obbligo di restituirlo e di pagare un interesse."],
+  ["Qual è la funzione di intermediazione delle banche?","Raccolgono il risparmio (depositi) e concedono prestiti a chi ne ha bisogno."],
+  ["Cos'è l'interesse?","Il compenso pagato per l'uso del denaro preso in prestito."]]},
+
+{part:"ECONOMIA",id:14,title:"Il lavoro, la produzione e l'impresa",sub:"Settori, fattori produttivi e loro remunerazione",
+ sintesi:[
+  "La produzione è l'attività che crea o accresce l'utilità dei beni per soddisfare i bisogni.",
+  "I settori della produzione sono: primario (agricoltura), secondario (industria) e terziario (servizi), più il terziario avanzato.",
+  "I fattori produttivi sono: terra (risorse naturali), lavoro, capitale e organizzazione/imprenditorialità.",
+  "A ogni fattore corrisponde una remunerazione: rendita (terra), salario/stipendio (lavoro), interesse (capitale), profitto (imprenditore).",
+  "Il lavoro può essere dipendente (subordinato, con stipendio) o autonomo (svolto in proprio). È tutelato dalla Costituzione (artt. 1, 4, 35-40).",
+  "L'impresa è l'organizzazione dei fattori produttivi per produrre e scambiare beni o servizi. L'imprenditore è definito dall'art. 2082 c.c. Le imprese possono essere individuali o collettive (società).",
+  "La produttività è il rapporto tra la quantità prodotta e i fattori produttivi impiegati."],
+ parole:["produzione","settori economici","fattori produttivi","terra","lavoro","capitale","imprenditorialità","salario","rendita","interesse","profitto","lavoro dipendente/autonomo","impresa","produttività"],
+ ricorda:"4 fattori → 4 remunerazioni: <b>Terra→Rendita · Lavoro→Salario · Capitale→Interesse · Organizzazione→Profitto</b>. 3 settori = Primario (campi) · Secondario (fabbriche) · Terziario (servizi).",
+ domande:[
+  ["Cos'è la produzione?","L'attività che crea o accresce l'utilità dei beni per soddisfare i bisogni."],
+  ["Quali sono i tre settori della produzione?","Primario (agricoltura), secondario (industria) e terziario (servizi)."],
+  ["Quali sono i fattori della produzione?","Terra (risorse naturali), lavoro, capitale e organizzazione/imprenditorialità."],
+  ["Come si chiama la remunerazione del lavoro?","Il salario o lo stipendio."],
+  ["Come si chiama la remunerazione del capitale e della terra?","L'interesse (capitale) e la rendita (terra)."],
+  ["Cos'è il profitto?","La remunerazione dell'imprenditore: ciò che resta dei ricavi dopo aver pagato i costi."],
+  ["Differenza tra lavoro dipendente e autonomo?","Il dipendente è subordinato a un datore di lavoro e riceve uno stipendio; l'autonomo lavora in proprio senza vincolo di subordinazione."],
+  ["Cos'è l'impresa?","L'organizzazione dei fattori produttivi per produrre e scambiare beni o servizi."],
+  ["Chi è l'imprenditore secondo il codice civile?","Chi esercita professionalmente un'attività economica organizzata per produrre o scambiare beni e servizi (art. 2082 c.c.)."],
+  ["Cos'è la produttività?","Il rapporto tra la quantità prodotta e i fattori produttivi impiegati."]]},
+
+{part:"ECONOMIA",id:15,title:"Lo Stato nell'economia e la globalizzazione",sub:"Imposte e tasse, PIL, spesa pubblica, sostenibilità",
+ sintesi:[
+  "Lo Stato interviene nell'economia: fornisce beni e servizi pubblici, corregge i «fallimenti del mercato», redistribuisce il reddito e persegue crescita e stabilità.",
+  "Le entrate pubbliche sono i tributi: imposte (senza un servizio diretto in cambio, es. IRPEF e IVA), tasse (pagate per uno specifico servizio) e contributi.",
+  "Le imposte si dividono in dirette (colpiscono reddito e patrimonio) e indirette (colpiscono consumi e scambi). Vale il principio di progressività (art. 53): chi ha di più paga proporzionalmente di più.",
+  "La spesa pubblica finanzia servizi, istruzione, sanità, pensioni e infrastrutture. Quando le spese superano le entrate si crea il deficit, che alimenta il debito pubblico.",
+  "Il PIL (Prodotto Interno Lordo) è il valore di tutti i beni e servizi finali prodotti in un Paese in un anno: misura la ricchezza prodotta (ma non il benessere, l'ambiente o le disuguaglianze).",
+  "La globalizzazione è la crescente integrazione e interdipendenza delle economie mondiali (commercio, imprese multinazionali, finanza, tecnologia): porta vantaggi ma anche problemi.",
+  "Lo sviluppo sostenibile soddisfa i bisogni del presente senza compromettere le generazioni future (Agenda 2030 dell'ONU)."],
+ parole:["beni pubblici","tributi","imposte","tasse","imposte dirette/indirette","progressività (art. 53)","spesa pubblica","debito pubblico","PIL","globalizzazione","multinazionali","sviluppo sostenibile","Agenda 2030"],
+ ricorda:"<b>Imposta</b> = non ricevi un servizio diretto (IRPEF, IVA); <b>Tassa</b> = paghi un servizio preciso. <b>Dirette</b>=reddito, <b>Indirette</b>=consumi. PIL = ricchezza prodotta in 1 anno. Sostenibilità = «bisogni oggi senza rovinare il domani».",
+ domande:[
+  ["Quali sono i principali compiti economici dello Stato?","Fornire beni e servizi pubblici, redistribuire il reddito, correggere i fallimenti del mercato e garantire stabilità."],
+  ["Cosa sono i tributi?","I prelievi obbligatori imposti dallo Stato: imposte, tasse e contributi."],
+  ["Differenza tra imposta e tassa?","L'imposta è prelevata senza un servizio diretto in cambio; la tassa è pagata per uno specifico servizio pubblico."],
+  ["Differenza tra imposte dirette e indirette?","Le dirette colpiscono reddito e patrimonio (es. IRPEF); le indirette colpiscono consumi e scambi (es. IVA)."],
+  ["Cosa afferma il principio di progressività (art. 53)?","Chi ha una capacità contributiva maggiore paga proporzionalmente di più (aliquote crescenti)."],
+  ["Cos'è la spesa pubblica?","L'insieme delle uscite dello Stato per servizi, infrastrutture e welfare."],
+  ["Cos'è il debito pubblico?","Il debito accumulato dallo Stato quando le spese superano le entrate."],
+  ["Cos'è il PIL?","Il valore di tutti i beni e servizi finali prodotti in un Paese nell'arco di un anno."],
+  ["Cos'è la globalizzazione?","La crescente integrazione e interdipendenza tra le economie e le società del mondo."],
+  ["Cos'è lo sviluppo sostenibile?","Uno sviluppo che soddisfa i bisogni del presente senza compromettere quelli delle generazioni future."]]}
+];
+
+const app=document.getElementById('app');
+const done=new Set();
+let lastPart="";
+
+DATA.forEach(ch=>{
+  if(ch.part!==lastPart){
+    const pl=document.createElement('div');
+    pl.className='partlabel'+(ch.part==="ECONOMIA"?' eco':'');
+    pl.textContent=(ch.part==="DIRITTO"?'Parte 1 — Diritto':'Parte 2 — Economia');
+    app.appendChild(pl);
+    lastPart=ch.part;
+  }
+  const eco=ch.part==="ECONOMIA";
+  const div=document.createElement('div');
+  div.className='chapter'+(eco?' eco':'');
+  const points=ch.sintesi.map(p=>`<li>${p}</li>`).join('');
+  const chips=ch.parole.map(p=>`<span class="chip">${p}</span>`).join('');
+  const quiz=ch.domande.map((d,i)=>`
+    <div class="q">
+      <div class="qq"><span class="qn">${i+1}.</span><span>${d[0]}</span></div>
+      <div class="aa"><b>Risposta:</b> ${d[1]}</div>
+    </div>`).join('');
+  div.innerHTML=`
+    <div class="chead">
+      <div class="num">${ch.id}</div>
+      <div class="ctitle">${ch.title}<small>${ch.sub}</small></div>
+      <label class="chk" onclick="event.stopPropagation()"><input type="checkbox" data-id="${ch.id}"> so</label>
+      <div class="arrow">▶</div>
+    </div>
+    <div class="cbody">
+      <div class="sec-h">Sintesi — punti chiave</div>
+      <ul class="points">${points}</ul>
+      <div class="sec-h">Parole chiave</div>
+      <div class="chips">${chips}</div>
+      <div class="sec-h">Come ricordarlo</div>
+      <div class="remember">${ch.ricorda}</div>
+      <div class="sec-h">10 domande di verifica</div>
+      <div class="qtools">
+        <button class="btn showAll">Mostra tutte le risposte</button>
+        <button class="btn hideAll">Nascondi</button>
+      </div>
+      <div class="quiz">${quiz}</div>
+    </div>`;
+  app.appendChild(div);
+
+  div.querySelector('.chead').addEventListener('click',()=>div.classList.toggle('open'));
+  div.querySelectorAll('.q .qq').forEach(q=>q.addEventListener('click',()=>q.parentElement.classList.toggle('show')));
+  div.querySelector('.showAll').addEventListener('click',()=>div.querySelectorAll('.q').forEach(q=>q.classList.add('show')));
+  div.querySelector('.hideAll').addEventListener('click',()=>div.querySelectorAll('.q').forEach(q=>q.classList.remove('show')));
+  div.querySelector('.chk input').addEventListener('change',e=>{
+    if(e.target.checked)done.add(ch.id);else done.delete(ch.id);
+    document.getElementById('doneCount').textContent=done.size;
+  });
+});
+
+document.getElementById('expandAll').addEventListener('click',()=>document.querySelectorAll('.chapter').forEach(c=>c.classList.add('open')));
+document.getElementById('collapseAll').addEventListener('click',()=>document.querySelectorAll('.chapter').forEach(c=>c.classList.remove('open')));
+document.getElementById('hideAllAns').addEventListener('click',()=>document.querySelectorAll('.q').forEach(q=>q.classList.remove('show')));
+</script>
+</body>
+</html>
