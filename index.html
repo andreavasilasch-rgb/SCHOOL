@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>A scuola di democrazia — Ripasso interattivo</title>
+<title>Ripasso interattivo — I miei libri</title>
 <style>
 :root{
  --green:#3aaa35;--green-d:#2d8a29;--red:#e2342b;--gold:#d99616;
@@ -113,14 +113,25 @@ ul.points{margin:0;padding-left:19px}ul.points li{margin:5px 0;font-size:14px}
 .intro b{color:var(--ink)}
 footer{max-width:960px;margin:24px auto 0;padding:14px 18px;color:var(--muted);font-size:11.5px;text-align:center}
 @media(max-width:560px){header.top h1{font-size:21px}.ctitle{font-size:14.5px}.tab{min-width:0;font-size:13px;padding:10px 6px}}
+</style><style>
+.bookbar{display:flex;align-items:center;gap:8px;margin-top:12px;flex-wrap:wrap}
+.bookbar label{font-size:12.5px;opacity:.9}
+#bookSel{font-size:14px;font-weight:600;border-radius:10px;padding:8px 12px;border:0;background:rgba(255,255,255,.95);color:#1e2430;cursor:pointer;max-width:100%}
 </style>
 </head>
 <body>
 <header class="top">
  <div class="inner">
   <button class="theme" id="themeBtn" title="Tema chiaro/scuro">🌙</button>
-  <h1>A scuola di democrazia</h1>
-  <p class="sub">Ripasso interattivo · Diritto ed Economia · 1° biennio · Zagrebelsky–Trucco–Bacceli</p>
+  <h1 id="hTitle">A scuola di democrazia</h1>
+  <p class="sub" id="hSub">Ripasso interattivo</p>
+  <div class="bookbar">
+   <label for="bookSel">📚 Libro:</label>
+   <select id="bookSel">
+    <option value="democrazia">📘 A scuola di democrazia — Diritto ed Economia</option>
+    <option value="abriendo">📗 Abriendo Caminos — Spagnolo (Lengua)</option>
+   </select>
+  </div>
  </div>
 </header>
 <div class="tabs">
@@ -130,13 +141,11 @@ footer{max-width:960px;margin:24px auto 0;padding:14px 18px;color:var(--muted);f
 </div>
 <div class="progress-wrap">
  <div class="pbar"><span id="pbarFill"></span></div>
- <div class="pmeta"><span id="pText">0 / 15 capitoli segnati come studiati</span><span id="pPct">0%</span></div>
+ <div class="pmeta"><span id="pText"></span><span id="pPct">0%</span></div>
 </div>
-
 <div class="wrap">
- <!-- STUDY -->
  <section class="view active" id="study">
-  <div class="intro">Leggi la <b>sintesi</b>, ripeti le <b>parole chiave</b>, guarda il trucco <b>“Come ricordarlo”</b>, poi prova le <b>10 domande</b> (clicca per la risposta). Spunta ✓ quando sai un capitolo: i progressi restano salvati sul tuo dispositivo.</div>
+  <div class="intro">Scegli il <b>libro</b> in alto. Poi leggi la <b>sintesi</b>, ripeti le <b>parole chiave</b>, guarda il trucco <b>“Come ricordarlo”</b> e prova le <b>10 domande</b> (clicca per la risposta). Spunta ✓ quando sai un'unità: i progressi restano salvati sul tuo dispositivo, separati per libro.</div>
   <div class="toolbar">
    <input class="search" id="search" placeholder="🔍 Cerca un argomento o una parola chiave…">
    <button class="btn primary" id="expandAll">Apri tutti</button>
@@ -145,10 +154,8 @@ footer{max-width:960px;margin:24px auto 0;padding:14px 18px;color:var(--muted);f
   </div>
   <div id="studyList"></div>
  </section>
-
- <!-- FLASHCARDS -->
  <section class="view" id="cards">
-  <div class="intro">Modalità <b>flashcard</b>: leggi la domanda, prova a rispondere a mente, poi <b>clicca la carta</b> per girarla. Segna se la sapevi o no per capire dove ripassare.</div>
+  <div class="intro">Modalità <b>flashcard</b>: leggi la domanda, prova a rispondere a mente, poi <b>clicca la carta</b> per girarla. Segna se la sapevi o no.</div>
   <div class="toolbar">
    <select class="sel" id="cardScope"></select>
    <button class="btn" id="cardShuffle">🔀 Mescola</button>
@@ -167,10 +174,8 @@ footer{max-width:960px;margin:24px auto 0;padding:14px 18px;color:var(--muted);f
   <div class="counter" id="fcCount" style="margin-top:10px"></div>
   <div class="tally"><span class="ok" id="fcOk">✓ 0</span><span class="no" id="fcNo2">✗ 0</span></div>
  </section>
-
- <!-- QUIZ -->
  <section class="view" id="quiz">
-  <div class="intro">Mettiti alla prova con un <b>quiz a scelta multipla</b>. Scegli l'argomento e quante domande fare: avrai il <b>punteggio finale</b> e l'elenco degli errori con le risposte giuste.</div>
+  <div class="intro">Mettiti alla prova con un <b>quiz a scelta multipla</b> sul libro scelto. Avrai il <b>punteggio finale</b> e l'elenco degli errori con le risposte giuste.</div>
   <div class="toolbar" id="quizSetup">
    <select class="sel" id="quizScope"></select>
    <select class="sel" id="quizLen">
@@ -184,8 +189,7 @@ footer{max-width:960px;margin:24px auto 0;padding:14px 18px;color:var(--muted);f
   <div id="quizArea"></div>
  </section>
 </div>
-<footer>Materiale di studio per il ripasso personale · basato su “A scuola di democrazia” (Zagrebelsky, Trucco, Bacceli).</footer>
-
+<footer>Materiale di studio per il ripasso personale · «A scuola di democrazia» (Zagrebelsky, Trucco, Bacceli) e «Abriendo Caminos» (Ramos, Santos, Santos).</footer>
 <script>
 const DATA=[
 {part:"DIRITTO",id:1,title:"Le norme e il diritto",sub:"Regole sociali e giuridiche, caratteri della norma",
@@ -527,136 +531,137 @@ const DATA=[
   ["Cos'è la globalizzazione?","La crescente integrazione e interdipendenza tra le economie e le società del mondo."],
   ["Cos'è lo sviluppo sostenibile?","Uno sviluppo che soddisfa i bisogni del presente senza compromettere quelli delle generazioni future."]]}
 ];
+const DATA2=[{"part": "BASE", "id": 1, "title": "Sonidos, alfabeto y saludos", "sub": "Pronuncia spagnola e presentazioni", "sintesi": ["L'alfabeto spagnolo ha 27 lettere: come l'italiano più la ñ.", "La c davanti a e/i suona interdentale /θ/ come «th» (in America /s/): cena, cine; davanti a a/o/u suona /k/: casa. La z suona come la c+e/i: zapato, plaza.", "qu suona /k/ e la u è muta: queso, aquí. La g davanti a e/i è aspirata come j: gente, gimnasio; in gue/gui la u è muta (guerra, guitarra), con dieresi güe/güi si sente (pingüino).", "La h è sempre muta: hola, hoy. La ll suona come «gli/y»: llamar, calle. La ñ come «gn»: español, niño. La r iniziale e la rr sono forti: rojo, perro.", "Saluti: Hola, Buenos días, Buenas tardes, Buenas noches, Adiós, Hasta luego. Presentarsi: ¿Cómo te llamas? – Me llamo…; ¿De dónde eres? – Soy de…; ¿Cómo estás? – Estoy bien."], "parole": ["hola", "buenos días", "buenas tardes", "buenas noches", "adiós", "hasta luego", "¿cómo te llamas?", "me llamo…", "¿de dónde eres?", "gracias", "por favor"], "ricorda": "La <b>h</b> non si pronuncia MAI. La <b>u</b> in que/qui e gue/gui è MUTA (tranne con la dieresi ü). La <b>ñ</b> = «gn» italiano; la <b>ll</b> = «gli».", "domande": [["Come si pronuncia la «h» in «hola»?", "Non si pronuncia: la h è sempre muta."], ["Che suono ha la «c» in «cine»?", "Interdentale /θ/ (come «th»); in America /s/."], ["La «u» si sente in «guitarra»?", "No: in gue/gui la u è muta (si sente solo con la dieresi güe/güi)."], ["Come suona la «ñ» di «español»?", "Come «gn» italiano (niño ≈ «ninio»)."], ["Traduci «Buonanotte».", "Buenas noches."], ["Come si chiede «Come ti chiami?»", "¿Cómo te llamas?"], ["Rispondi a «¿De dónde eres?» (sei di Roma).", "Soy de Roma."], ["Che differenza di suono c'è tra «casa» e «cena»?", "In «casa» la c suona /k/; in «cena» suona /θ/ (o /s/)."], ["Come si dice «grazie» e «per favore»?", "Gracias / por favor."], ["Come suona la doppia «rr» in «perro»?", "R forte, vibrante multipla."]]}, {"part": "BASE", "id": 2, "title": "Artículos, género y número", "sub": "el/la, un/una, plurali", "sintesi": ["Articoli determinativi: el (m.sg), la (f.sg), los (m.pl), las (f.pl). Indeterminativi: un, una, unos, unas.", "Genere: di norma -o maschile (el libro), -a femminile (la mesa). Eccezioni: el día, el mapa, el problema, el idioma; la mano, la foto, la radio.", "Plurale: +s dopo vocale (casa→casas); +es dopo consonante (papel→papeles); parole in -z → -ces (lápiz→lápices).", "Contrazioni obbligatorie (le uniche due): a + el = al; de + el = del.", "Professioni e nazionalità al femminile spesso in -a: profesor→profesora, italiano→italiana."], "parole": ["el/la/los/las", "un/una/unos/unas", "al", "del", "el día", "la mano", "el problema", "lápiz→lápices", "papel→papeles"], "ricorda": "Solo DUE contrazioni: a+el=<b>al</b>, de+el=<b>del</b>. Plurale: vocale <b>+s</b>, consonante <b>+es</b>, -z→<b>-ces</b>.", "domande": [["Qual è il plurale di «lápiz»?", "Lápices."], ["Completa: «Voy ___ cine» (a+el).", "Voy al cine."], ["Completa: «La casa ___ profesor» (de+el).", "La casa del profesor."], ["Articolo di «día»?", "El (el día: maschile pur finendo in -a)."], ["Plurale di «papel»?", "Papeles."], ["Articolo determinativo femminile plurale?", "Las."], ["Genere di «mano»?", "Femminile: la mano (eccezione)."], ["Femminile di «el profesor»?", "La profesora."], ["Indeterminativo plurale maschile?", "Unos."], ["Plurale di «el problema»?", "Los problemas (maschile)."]]}, {"part": "BASE", "id": 3, "title": "Presente: ser, estar, tener", "sub": "Verbi regolari e i tre verbi base", "sintesi": ["Presente regolare: -ar (hablar: hablo, hablas, habla, hablamos, habláis, hablan), -er (comer: como, comes, come, comemos, coméis, comen), -ir (vivir: vivo, vives, vive, vivimos, vivís, viven).", "SER (identità, origine, professione, caratteristiche permanenti): soy, eres, es, somos, sois, son. Es. Soy italiano.", "ESTAR (stati temporanei, luogo, umore): estoy, estás, está, estamos, estáis, están. Es. Estoy cansado; Madrid está en España.", "TENER (possesso ed età): tengo, tienes, tiene, tenemos, tenéis, tienen. L'età si dice con tener: Tengo 15 años.", "Ser vs estar: SER = ciò che sei (permanente); ESTAR = come/dove stai (temporaneo, posizione)."], "parole": ["ser", "estar", "tener", "hablar", "comer", "vivir", "¿cuántos años tienes?", "tengo… años"], "ricorda": "<b>SER</b> = ciò che SEI (permanente); <b>ESTAR</b> = come STAI / dove STAI (temporaneo/luogo). L'età con <b>TENER</b>: «tengo 15 años», mai con ser.", "domande": [["Coniuga «hablar» alla 1ª persona singolare.", "Hablo."], ["«Nosotros (comer)…»", "Comemos."], ["Ser o estar? «___ cansado» (stanco).", "Estoy (stato temporaneo → estar)."], ["Ser o estar? «Madrid ___ en España.»", "Está (luogo → estar)."], ["Come si dice «Ho 15 anni»?", "Tengo quince años."], ["Coniuga «ser» alla 2ª singolare.", "Eres."], ["«Vosotros (vivir)…»", "Vivís."], ["Ser o estar per la professione? «___ médico.»", "Soy (ser)."], ["3ª plurale di «tener».", "Tienen."], ["Traduci «Siamo italiani».", "Somos italianos."]]}, {"part": "BASE", "id": 4, "title": "Pronombres, posesivos y demostrativos", "sub": "Soggetto, mi/tu/su, este/ese/aquel", "sintesi": ["Pronomi soggetto: yo, tú, él/ella/usted, nosotros/as, vosotros/as, ellos/ellas/ustedes. Usted/ustedes = forma di cortesia, con il verbo alla 3ª persona.", "Possessivi atoni: mi(s), tu(s), su(s), nuestro/a(s), vuestro/a(s), su(s). Concordano nel numero; nuestro/vuestro anche nel genere: mi casa, mis libros, nuestra clase.", "Dimostrativi (tre distanze): este/esta/estos/estas (vicino), ese/esa/esos/esas (medio), aquel/aquella/aquellos/aquellas (lontano).", "«su» è ambiguo: può voler dire suo, sua, loro o Suo (cortesia)."], "parole": ["yo/tú/usted", "mi/tu/su", "nuestro", "vuestro", "este/ese/aquel", "aquí/ahí/allí"], "ricorda": "Tre distanze: <b>este</b> (qui/aquí), <b>ese</b> (lì/ahí), <b>aquel</b> (là lontano/allí). <b>Usted</b> vuole il verbo alla 3ª persona.", "domande": [["Come si dice «Lei» di cortesia?", "Usted."], ["Possessivo per «i miei libri»?", "Mis libros."], ["Dimostrativo per un oggetto lontano (m.sg)?", "Aquel."], ["«___ casa es grande» (la nostra).", "Nuestra."], ["Che persona verbale usa «usted»?", "La 3ª singolare."], ["Traduci «questi ragazzi».", "Estos chicos."], ["Cosa può significare «su»?", "Suo/sua/loro/Suo (di lui, lei, loro o cortesia)."], ["Pronome soggetto 1ª plurale femminile?", "Nosotras."], ["«___ chica» (codesta, vicina a te).", "Esa."], ["Possessivo «vostre» (f.pl)?", "Vuestras."]]}, {"part": "BASE", "id": 5, "title": "Hay / estar y preposiciones de lugar", "sub": "Esistenza, posizione e la casa", "sintesi": ["HAY (invariabile, da haber) = «c'è / ci sono», per esistenza e quantità indefinita: Hay un libro; Hay tres sillas. Si usa con un/una, numeri, mucho, algún o senza articolo.", "ESTAR = posizione di qualcosa di determinato: El libro está en la mesa. Si usa con articolo determinativo o nome proprio.", "Regola: HAY + cosa indefinita; ESTÁ(N) + cosa definita.", "Preposizioni di luogo: en, encima de, debajo de, delante de, detrás de, al lado de, entre, cerca de, lejos de.", "Vocabolario casa: la cocina, el dormitorio, el salón, el baño, la mesa, la silla, la cama."], "parole": ["hay", "está/están", "encima de", "debajo de", "al lado de", "delante de", "detrás de", "entre", "la cocina", "el dormitorio"], "ricorda": "Indefinito → <b>HAY</b> («hay una silla»); Definito → <b>ESTÁ</b> («la silla está aquí»). <i>Hay</i> è sempre invariabile.", "domande": [["«___ tres libros en la mesa.»", "Hay."], ["«El gato ___ debajo de la silla.»", "Está."], ["Hay o está? «El baño ___ al lado de la cocina.»", "Está (cosa determinata → estar)."], ["Traduci «sopra il tavolo».", "Encima de la mesa."], ["«Los niños ___ en el jardín.»", "Están."], ["Traduci «davanti alla casa».", "Delante de la casa."], ["«¿Cuántas sillas ___?»", "Hay."], ["Contrario di «cerca de»?", "Lejos de."], ["Come si dice «camera da letto»?", "El dormitorio."], ["Perché si dice «hay un problema» e non «está un problema»?", "Perché è indefinito (un): l'esistenza indefinita vuole HAY."]]}, {"part": "BASE", "id": 6, "title": "Gustar y expresar gustos", "sub": "Il verbo gustar e simili", "sintesi": ["GUSTAR funziona al contrario dell'italiano: il soggetto è la cosa che piace. Struttura: (A mí) me gusta + singolare/infinito; me gustan + plurale. Me gusta el café; Me gustan los deportes; Me gusta bailar.", "Pronomi: me, te, le, nos, os, les. Si rafforzano con a mí, a ti, a él…: A mí me gusta.", "Verbi simili: encantar (piacere molto), interesar, molestar, doler. Me encanta la música; Me duele la cabeza.", "Accordo/disaccordo: A mí también (anche a me, +), A mí tampoco (neanche a me, –), A mí sí / A mí no."], "parole": ["me/te/le/nos/os/les", "gustar", "encantar", "doler", "interesar", "también", "tampoco"], "ricorda": "Piace UNA cosa → gust<b>a</b>; piaccioNO più cose → gust<b>an</b>. Con infinito sempre singolare (me gusta comer). <b>también</b> = anche (+), <b>tampoco</b> = neanche (–).", "domande": [["«Me ___ los libros.»", "Gustan."], ["«Me ___ el chocolate.»", "Gusta."], ["Traduci «Mi piace ballare».", "Me gusta bailar."], ["Come si dice «Mi piace moltissimo la musica»?", "Me encanta la música."], ["Pronome per «a nosotros»?", "Nos."], ["Rispondi in accordo positivo a «Me gusta el fútbol».", "A mí también."], ["Rispondi in accordo negativo a «No me gusta correr».", "A mí tampoco."], ["«Le ___ los animales.» (a lui, plurale)", "Gustan."], ["Traduci «Mi fa male la testa».", "Me duele la cabeza."], ["Perché si dice «me gustan las flores»?", "Perché il soggetto (las flores) è plurale, quindi il verbo va al plurale."]]}, {"part": "BASE", "id": 7, "title": "Presente irregular y reflexivos", "sub": "Dittonghi, 1ª pers. in -go, la rutina", "sintesi": ["Irregolari con dittongo: e→ie (querer→quiero, empezar, pensar, preferir), o→ue (poder→puedo, dormir, volver, contar), e→i (pedir→pido, servir). Il cambio avviene in tutte le persone tranne nosotros/vosotros.", "Irregolari solo alla 1ª persona: hacer→hago, poner→pongo, salir→salgo, traer→traigo, conocer→conozco, saber→sé, ver→veo, dar→doy.", "Verbi riflessivi: il pronome (me, te, se, nos, os, se) va prima del verbo coniugato: levantarse → me levanto, te levantas, se levanta…", "Vocabolario rutina: levantarse, ducharse, vestirse, desayunar, acostarse."], "parole": ["querer/quiero", "poder/puedo", "dormir/duermo", "hacer/hago", "levantarse", "ducharse", "acostarse", "primero/luego/después"], "ricorda": "Irregolari «1ª persona in -GO»: ha<b>go</b>, pon<b>go</b>, sal<b>go</b>, trai<b>go</b>. Dittongo e→ie / o→ue MA non a nosotros/vosotros. Riflessivo: pronome PRIMA del verbo.", "domande": [["1ª singolare di «hacer».", "Hago."], ["Coniuga «poder» (yo).", "Puedo."], ["«Nosotros (querer)…» (attento al dittongo).", "Queremos (senza dittongo)."], ["1ª singolare di «salir».", "Salgo."], ["Coniuga «dormir» (él).", "Duerme."], ["Traduci «Mi alzo alle sette».", "Me levanto a las siete."], ["«Ellos (pedir)…»", "Piden."], ["1ª singolare di «saber».", "Sé."], ["Dove va il pronome riflessivo nel presente?", "Prima del verbo coniugato (me levanto)."], ["Coniuga «vestirse» (tú).", "Te vistes."]]}, {"part": "BASE", "id": 8, "title": "Perífrasis verbales", "sub": "estar+gerundio, ir a+inf, tener que", "sintesi": ["Estar + gerundio (azione in corso): gerundio -ar→-ando (hablando), -er/-ir→-iendo (comiendo, viviendo). Estoy estudiando.", "Ir a + infinito (futuro immediato/intenzione): Voy a estudiar; Vamos a comer (ir: voy, vas, va, vamos, vais, van).", "Tener que + infinito = dovere personale (Tengo que estudiar); Hay que + infinito = obbligo impersonale (Hay que trabajar).", "Acabar de + infinito = aver appena fatto (Acabo de llegar). Volver a + infinito = fare di nuovo (Vuelvo a leer).", "Gerundi irregolari: leyendo, durmiendo, pidiendo, diciendo."], "parole": ["estar + gerundio", "ir a + inf", "tener que", "hay que", "acabar de", "hablando", "comiendo", "leyendo"], "ricorda": "In CORSO → estar + gerundio. INTENZIONE → ir a + infinito. OBBLIGO personale → <b>tener que</b>; impersonale → <b>hay que</b>. «Acabar de» = appena.", "domande": [["Gerundio di «comer».", "Comiendo."], ["Traduci «Sto studiando».", "Estoy estudiando."], ["Traduci «Sto per mangiare».", "Voy a comer."], ["Come si dice «Devo studiare» (obbligo personale)?", "Tengo que estudiar."], ["Obbligo impersonale «bisogna lavorare»?", "Hay que trabajar."], ["Gerundio irregolare di «leer».", "Leyendo."], ["Traduci «Sono appena arrivato».", "Acabo de llegar."], ["Gerundio di «dormir».", "Durmiendo."], ["«Nosotros ___ a viajar» (ir a).", "Vamos."], ["Differenza tra «tener que» e «hay que»?", "«Tener que» è obbligo personale; «hay que» è impersonale/generale."]]}, {"part": "AVANZADO", "id": 9, "title": "Pretérito perfecto", "sub": "haber + participio; ya / todavía no", "sintesi": ["Formazione: presente di HABER (he, has, ha, hemos, habéis, han) + participio (-ar→-ado, -er/-ir→-ido): he hablado, has comido, ha vivido.", "Uso: azioni passate in un tempo non concluso o legato al presente. Marcatori: hoy, esta semana, este año, ya, todavía no, nunca, alguna vez. Es. Hoy he estudiado.", "Participi irregolari: hecho (hacer), dicho (decir), visto (ver), escrito (escribir), puesto (poner), vuelto (volver), abierto (abrir), roto (romper), muerto (morir).", "ya (già) / todavía no (non ancora): ¿Ya has comido? – No, todavía no."], "parole": ["he/has/ha/hemos/habéis/han", "-ado/-ido", "hoy", "esta semana", "ya", "todavía no", "alguna vez", "nunca"], "ricorda": "HABER + participio. Marcatori «aperti/vicini»: hoy, este año, ya, todavía no, alguna vez. Irregolari chiave: <b>hecho, dicho, visto, escrito, puesto, vuelto, abierto, roto</b>.", "domande": [["Forma il pretérito perfecto di «hablar» (yo).", "He hablado."], ["Participio di «hacer».", "Hecho."], ["Traduci «Oggi ho mangiato».", "Hoy he comido."], ["Participio di «escribir».", "Escrito."], ["Coniuga «haber» alla 3ª plurale.", "Han."], ["Traduci «Hai già finito?»", "¿Ya has terminado?"], ["Participio di «ver».", "Visto."], ["«¿Alguna vez ___ (tú, viajar) a México?»", "Has viajado."], ["Con quali marcatori si usa il pretérito perfecto?", "Hoy, esta semana, este año, ya, todavía no, alguna vez, nunca."], ["Participio di «volver».", "Vuelto."]]}, {"part": "AVANZADO", "id": 10, "title": "Pretérito indefinido", "sub": "Passato concluso e datato", "sintesi": ["Regolari: -ar (hablé, hablaste, habló, hablamos, hablasteis, hablaron), -er/-ir (comí, comiste, comió, comimos, comisteis, comieron).", "Uso: azioni concluse nel passato, con tempo definito e chiuso: ayer, la semana pasada, el año pasado, en 2010. Es. Ayer comí paella.", "Irregolari frequenti: ser/ir = fui, fuiste, fue, fuimos, fuisteis, fueron (identici!); tener→tuve, estar→estuve, hacer→hice/hizo, poder→pude, poner→puse, decir→dije, venir→vine, dar→di.", "3ª persona di alcuni -ir con cambio vocalico: pedir→pidió/pidieron; dormir→durmió/durmieron."], "parole": ["-é/-aste/-ó", "-í/-iste/-ió", "ayer", "la semana pasada", "el año pasado", "fui", "tuve", "hice", "dije"], "ricorda": "Passato CONCLUSO e datato (ayer, el año pasado) → indefinido. <b>SER e IR</b> hanno la STESSA forma: fui, fuiste, fue… Irregolari senza accento: hice/hizo, tuve/tuvo.", "domande": [["Indefinido di «hablar» (yo).", "Hablé."], ["Traduci «Ieri mangiai la paella».", "Ayer comí paella."], ["Indefinido di «tener» (yo).", "Tuve."], ["«Ella (ir)…» al indefinido.", "Fue."], ["3ª singolare di «pedir».", "Pidió."], ["Indefinido di «hacer» (él).", "Hizo."], ["Con quali marcatori si usa l'indefinido?", "Ayer, la semana pasada, el año pasado, en + anno."], ["Indefinido di «decir» (yo).", "Dije."], ["3ª plurale di «comer».", "Comieron."], ["Perché «fui» può essere sia «ser» sia «ir»?", "Perché i due verbi hanno forme identiche al indefinido; il senso dipende dal contesto."]]}, {"part": "AVANZADO", "id": 11, "title": "Imperfecto y contraste con indefinido", "sub": "Descrizioni e abitudini nel passato", "sintesi": ["Imperfecto regolare: -ar (hablaba, hablabas, hablaba, hablábamos, hablabais, hablaban), -er/-ir (comía, comías, comía, comíamos, comíais, comían).", "Solo tre irregolari: ser (era, eras, era…), ir (iba, ibas, iba…), ver (veía, veías…).", "Uso: descrizioni nel passato, azioni abituali, età/ora/tempo atmosferico. Marcatori: antes, siempre, todos los días, mientras, cuando era niño.", "Contrasto: INDEFINIDO = azione puntuale/conclusa che fa avanzare la storia; IMPERFECTO = sfondo, descrizione, abitudine. Es. Mientras comía, sonó el teléfono."], "parole": ["-aba / -ía", "era", "iba", "veía", "antes", "siempre", "todos los días", "mientras", "de pequeño"], "ricorda": "Solo 3 irregolari: <b>era, iba, veía</b>. Imperfecto = FOTO/sfondo/abitudine; Indefinido = AZIONE puntuale. «Mientras comía (sfondo) → sonó (azione)».", "domande": [["Imperfecto di «hablar» (yo).", "Hablaba."], ["Quali sono i 3 verbi irregolari all'imperfetto?", "Ser (era), ir (iba), ver (veía)."], ["Traduci «Da piccolo giocavo molto».", "De pequeño jugaba mucho."], ["Imperfecto di «comer» (nosotros).", "Comíamos."], ["«Cuando era niño, ___ (jugar) al fútbol todos los días.»", "Jugaba (abitudine → imperfecto)."], ["Imperfecto di «ir» (ellos).", "Iban."], ["Quando si usa l'imperfecto?", "Descrizioni, abitudini nel passato, età/ora/tempo, azioni di sfondo."], ["Completa: «Mientras (yo) leía, ___ (sonar) el móvil.»", "Sonó (azione puntuale → indefinido)."], ["Imperfecto di «ver» (tú).", "Veías."], ["Differenza tra «comí» e «comía»?", "«Comí» = azione conclusa puntuale (indefinido); «comía» = azione abituale o descrizione (imperfecto)."]]}, {"part": "AVANZADO", "id": 12, "title": "Futuro y condicional", "sub": "Progetti, ipotesi, cortesia", "sintesi": ["Futuro simple: infinito + terminazioni uguali per tutti: -é, -ás, -á, -emos, -éis, -án. Hablaré, comerás, vivirá.", "Irregolari (radice modificata, stesse terminazioni): tener→tendré, poder→podré, hacer→haré, decir→diré, poner→pondré, salir→saldré, venir→vendré, haber→habré, querer→querré, saber→sabré.", "Uso futuro: azioni future (mañana, el próximo año) e probabilità sul presente (Serán las tres = saranno circa le tre).", "Condicional: infinito + -ía, -ías, -ía, -íamos, -íais, -ían (stessi irregolari del futuro): hablaría, tendría. Uso: cortesia (¿Podrías…?), consigli (Yo que tú, estudiaría), desideri (Me gustaría)."], "parole": ["-é/-ás/-á (futuro)", "-ía (condicional)", "tendré", "haré", "diré", "mañana", "me gustaría", "¿podrías…?"], "ricorda": "Futuro e condicional usano l'INFINITO INTERO come base (hablar+é). Gli irregolari sono gli STESSI: tendr-, podr-, har-, dir-, pondr-, saldr-, vendr-. Condicional = cortesia/desiderio.", "domande": [["Futuro di «hablar» (yo).", "Hablaré."], ["Futuro irregolare di «tener» (yo).", "Tendré."], ["Futuro di «hacer» (ella).", "Hará."], ["Traduci «Mi piacerebbe viaggiare».", "Me gustaría viajar."], ["Condicional di «poder» (tú), richiesta cortese.", "Podrías."], ["Futuro di «decir» (ellos).", "Dirán."], ["A cosa serve il condicional oltre alla cortesia?", "A dare consigli e a esprimere desideri (me gustaría)."], ["Base del futuro dei verbi regolari?", "L'infinito intero (+ terminazioni)."], ["Condicional di «hacer» (yo).", "Haría."], ["Traduci «Domani studierò».", "Mañana estudiaré."]]}, {"part": "AVANZADO", "id": 13, "title": "Imperativo", "sub": "Dare ordini, istruzioni e consigli", "sintesi": ["Imperativo affermativo tú: come la 3ª persona del presente (habla, come, vive). Irregolari tú: di (decir), haz (hacer), ve (ir), pon (poner), sal (salir), sé (ser), ten (tener), ven (venir).", "Usted: forma del presente di subjuntivo (hable, coma, viva). Vosotros: infinito con -d (hablad, comed, venid). Ustedes: hablen, coman.", "Imperativo negativo: si usa il subjuntivo per tutte le persone: no hables, no comas, no venga, no habléis.", "Pronomi: nell'affermativo si attaccano al verbo (dímelo, levántate); nel negativo vanno prima (no me lo digas, no te levantes)."], "parole": ["habla", "come", "ven", "haz", "di", "pon", "no hables", "no vengas", "dímelo", "levántate"], "ricorda": "Affermativo tú = 3ª persona presente (habla). 8 irregolari tú: <b>di, haz, ve, pon, sal, sé, ten, ven</b>. NEGATIVO = sempre subjuntivo. Pronomi: attaccati se +, davanti se –.", "domande": [["Imperativo affermativo «tú» di «hablar».", "Habla."], ["Imperativo irregolare «tú» di «hacer».", "Haz."], ["Imperativo irregolare «tú» di «venir».", "Ven."], ["Imperativo negativo «tú» di «hablar».", "No hables."], ["Imperativo «tú» di «decir».", "Di."], ["Dove vanno i pronomi nell'imperativo affermativo?", "Attaccati alla fine del verbo (dímelo, levántate)."], ["Imperativo negativo di «levantarse» (tú).", "No te levantes."], ["Imperativo «usted» di «comer».", "Coma."], ["Come si forma l'imperativo negativo?", "Con il presente di subjuntivo per tutte le persone."], ["Imperativo affermativo «vosotros» di «hablar».", "Hablad."]]}, {"part": "AVANZADO", "id": 14, "title": "Presente de subjuntivo", "sub": "Desideri, consigli, ojalá, cuando", "sintesi": ["Formazione: dalla 1ª persona del presente indicativo si inverte la vocale: -ar→e (hable), -er/-ir→a (coma, viva). Hable, hables, hable, hablemos, habléis, hablen.", "Irregolari da verbi in -go: tener→tenga, hacer→haga, poner→ponga, salir→salga, decir→diga. Altri: ser→sea, ir→vaya, estar→esté, haber→haya, saber→sepa, dar→dé, ver→vea.", "Usi base: desideri/speranze (Espero que vengas; Ojalá llueva), consigli/richieste (Quiero que estudies; Es importante que…), con cuando riferito al futuro (Cuando sea mayor…), emozioni (Me alegro de que…).", "Regola: verbo di desiderio/emozione + QUE + subjuntivo, quando i soggetti sono diversi."], "parole": ["hable", "coma", "sea", "vaya", "tenga", "ojalá", "espero que", "quiero que", "cuando + subj"], "ricorda": "Subjuntivo = «vocale al contrario»: -ar→<b>e</b>, -er/-ir→<b>a</b>. Si attiva dopo «que» con desideri/emozioni/consigli (quiero que, espero que, ojalá). Irregolari: sea, vaya, esté, tenga, haga.", "domande": [["Presente subjuntivo di «hablar» (yo).", "Hable."], ["Subjuntivo di «comer» (tú).", "Comas."], ["Subjuntivo irregolare di «ir» (él).", "Vaya."], ["Traduci «Spero che tu venga».", "Espero que vengas."], ["Subjuntivo di «ser» (ellos).", "Sean."], ["Completa: «Ojalá ___ (llover) mañana.»", "Llueva."], ["Come si forma il subjuntivo dei regolari?", "Dalla 1ª persona dell'indicativo, invertendo la vocale (-ar→e, -er/-ir→a)."], ["«Quiero que (tú) ___ (estudiar).»", "Estudies."], ["Subjuntivo di «tener» (yo).", "Tenga."], ["Quando si usa il subjuntivo con «cuando»?", "Quando ci si riferisce al futuro (Cuando sea mayor, viajaré)."]]}, {"part": "AVANZADO", "id": 15, "title": "Comparativos, superlativos y conectores", "sub": "Confronti e collegare le idee", "sintesi": ["Comparativi: superiorità «más … que» (más alto que), inferiorità «menos … que», uguaglianza «tan … como» (tan alto como) / «tanto/a/os/as … como».", "Irregolari: bueno→mejor, malo→peor, grande→mayor, pequeño→menor (non «más bueno»).", "Superlativo relativo: el/la/los/las + más/menos + agg. + de (el más alto de la clase). Superlativo assoluto: -ísimo (guapo→guapísimo, fácil→facilísimo).", "Ser vs estar (ripasso): ser (identità, caratteristiche, ora, materiale); estar (stato, luogo, umore). Es bueno (di carattere) ≠ Está bueno (buono da mangiare / sta bene).", "Connettivi utili: porque (causa), por eso (perciò), pero (ma), aunque (anche se), además (inoltre), sin embargo (tuttavia), primero/luego/por último."], "parole": ["más…que", "menos…que", "tan…como", "mejor", "peor", "-ísimo", "porque", "pero", "aunque", "sin embargo"], "ricorda": "Uguaglianza = «<b>tan</b> + aggettivo + <b>como</b>». Irregolari: <b>mejor, peor, mayor, menor</b> (mai «más bueno»). Superlativo assoluto = <b>-ísimo</b>. «Ser bueno» (carattere) ≠ «estar bueno» (buono/in salute).", "domande": [["Traduci «più alto di me».", "Más alto que yo."], ["Comparativo di uguaglianza: «___ alto ___ tú».", "Tan … como."], ["Comparativo irregolare di «bueno».", "Mejor."], ["Superlativo assoluto di «guapo».", "Guapísimo."], ["Traduci «il più alto della classe».", "El más alto de la clase."], ["Comparativo irregolare di «malo».", "Peor."], ["Connettivo per esprimere causa («perché»)?", "Porque."], ["Differenza tra «es bueno» e «está bueno»?", "«Es bueno» = buono di carattere/qualità; «está bueno» = gustoso o in buona salute."], ["Traduci «anche se» e «tuttavia».", "Aunque / sin embargo."], ["Superlativo assoluto di «fácil».", "Facilísimo."]]}];
 
+const BOOKS=[
+ {id:'democrazia',header:'A scuola di democrazia',sub:'Ripasso · Diritto ed Economia · 1° biennio · Zagrebelsky–Trucco–Bacceli',
+  parts:{DIRITTO:{label:'Parte 1 — Diritto',alt:0},ECONOMIA:{label:'Parte 2 — Economia',alt:1}},chapters:DATA},
+ {id:'abriendo',header:'Abriendo Caminos',sub:'Ripasso · Lengua española · Gramática y léxico · Ramos–Santos–Santos',
+  parts:{BASE:{label:'Nivel A1–A2 · Bases',alt:0},AVANZADO:{label:'Nivel B1–B2 · Avanzado',alt:1}},chapters:DATA2}
+];
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const store={get(k,d){try{const v=localStorage.getItem('sdd_'+k);return v==null?d:JSON.parse(v)}catch(e){return d}},
  set(k,v){try{localStorage.setItem('sdd_'+k,JSON.stringify(v))}catch(e){}}};
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
-const partName=p=>p==='DIRITTO'?'Diritto':'Economia';
 
-/* ---------- THEME ---------- */
+let CUR=BOOKS[0], done=new Set();
+
+/* THEME */
 const themeBtn=$('#themeBtn');
 function applyTheme(t){document.documentElement.dataset.theme=t;themeBtn.textContent=t==='dark'?'☀️':'🌙';store.set('theme',t)}
 applyTheme(store.get('theme','light'));
 themeBtn.onclick=()=>applyTheme(document.documentElement.dataset.theme==='dark'?'light':'dark');
 
-/* ---------- TABS ---------- */
+/* TABS */
 $$('.tab').forEach(t=>t.onclick=()=>{
  $$('.tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');
  $$('.view').forEach(v=>v.classList.remove('active'));$('#'+t.dataset.tab).classList.add('active');
 });
 
-/* ---------- PROGRESS ---------- */
-let done=new Set(store.get('done',[]));
-function saveDone(){store.set('done',[...done]);renderProgress()}
-function renderProgress(){
- const pct=Math.round(done.size/DATA.length*100);
+/* PROGRESS */
+function renderProgress(){const n=CUR.chapters.length,pct=Math.round(done.size/n*100);
  $('#pbarFill').style.width=pct+'%';
- $('#pText').textContent=done.size+' / '+DATA.length+' capitoli segnati come studiati';
- $('#pPct').textContent=pct+'%';
-}
+ $('#pText').textContent=done.size+' / '+n+' unità segnate come studiate';
+ $('#pPct').textContent=pct+'%';}
+function saveDone(){store.set('done_'+CUR.id,[...done]);renderProgress()}
 
-/* ---------- STUDY ---------- */
-const list=$('#studyList');let lastPart='';
-DATA.forEach(ch=>{
- if(ch.part!==lastPart){const pl=document.createElement('div');
-  pl.className='partlabel'+(ch.part==='ECONOMIA'?' eco':'');
-  pl.textContent=ch.part==='DIRITTO'?'Parte 1 — Diritto':'Parte 2 — Economia';
-  list.appendChild(pl);lastPart=ch.part;}
- const eco=ch.part==='ECONOMIA'?' eco':'';
- const div=document.createElement('div');div.className='chapter'+eco;div.dataset.search=(ch.title+' '+ch.sub+' '+ch.parole.join(' ')+' '+ch.sintesi.join(' ')).toLowerCase();
- div.innerHTML=
-  '<div class="chead"><div class="num">'+ch.id+'</div>'+
-  '<div class="ctitle">'+ch.title+'<small>'+ch.sub+'</small></div>'+
-  '<label class="chk" onclick="event.stopPropagation()"><input type="checkbox" '+(done.has(ch.id)?'checked':'')+'> so</label>'+
-  '<div class="arrow">▶</div></div>'+
-  '<div class="cbody"><div class="sec-h">Sintesi — punti chiave</div><ul class="points">'+
-  ch.sintesi.map(p=>'<li>'+p+'</li>').join('')+'</ul>'+
-  '<div class="sec-h">Parole chiave</div><div class="chips">'+ch.parole.map(p=>'<span class="chip">'+p+'</span>').join('')+'</div>'+
-  '<div class="sec-h">Come ricordarlo</div><div class="remember">'+ch.ricorda+'</div>'+
-  '<div class="sec-h">10 domande di verifica</div><div class="quiz">'+
-  ch.domande.map((d,i)=>'<div class="q"><div class="qq"><span class="qn">'+(i+1)+'.</span><span>'+d[0]+'</span></div><div class="aa"><b>Risposta:</b> '+d[1]+'</div></div>').join('')+'</div></div>';
- list.appendChild(div);
- div.querySelector('.chead').addEventListener('click',()=>div.classList.toggle('open'));
- div.querySelectorAll('.q .qq').forEach(q=>q.addEventListener('click',()=>q.parentElement.classList.toggle('show')));
- div.querySelector('.chk input').addEventListener('change',e=>{e.target.checked?done.add(ch.id):done.delete(ch.id);saveDone()});
-});
+/* STUDY */
+function buildStudy(){
+ const list=$('#studyList');list.innerHTML='';let lastPart='';
+ CUR.chapters.forEach(ch=>{
+  const pinfo=CUR.parts[ch.part]||{label:ch.part,alt:0};
+  if(ch.part!==lastPart){const pl=document.createElement('div');
+   pl.className='partlabel'+(pinfo.alt?' eco':'');pl.textContent=pinfo.label;list.appendChild(pl);lastPart=ch.part;}
+  const eco=pinfo.alt?' eco':'';
+  const div=document.createElement('div');div.className='chapter'+eco;
+  div.dataset.search=(ch.title+' '+ch.sub+' '+ch.parole.join(' ')+' '+ch.sintesi.join(' ')).toLowerCase();
+  div.innerHTML=
+   '<div class="chead"><div class="num">'+ch.id+'</div>'+
+   '<div class="ctitle">'+ch.title+'<small>'+ch.sub+'</small></div>'+
+   '<label class="chk" onclick="event.stopPropagation()"><input type="checkbox" '+(done.has(ch.id)?'checked':'')+'> so</label>'+
+   '<div class="arrow">▶</div></div>'+
+   '<div class="cbody"><div class="sec-h">Sintesi — punti chiave</div><ul class="points">'+
+   ch.sintesi.map(p=>'<li>'+p+'</li>').join('')+'</ul>'+
+   '<div class="sec-h">Parole chiave</div><div class="chips">'+ch.parole.map(p=>'<span class="chip">'+p+'</span>').join('')+'</div>'+
+   '<div class="sec-h">Come ricordarlo</div><div class="remember">'+ch.ricorda+'</div>'+
+   '<div class="sec-h">10 domande di verifica</div><div class="quiz">'+
+   ch.domande.map((d,i)=>'<div class="q"><div class="qq"><span class="qn">'+(i+1)+'.</span><span>'+d[0]+'</span></div><div class="aa"><b>Risposta:</b> '+d[1]+'</div></div>').join('')+'</div></div>';
+  list.appendChild(div);
+  div.querySelector('.chead').addEventListener('click',()=>div.classList.toggle('open'));
+  div.querySelectorAll('.q .qq').forEach(q=>q.addEventListener('click',()=>q.parentElement.classList.toggle('show')));
+  div.querySelector('.chk input').addEventListener('change',e=>{e.target.checked?done.add(ch.id):done.delete(ch.id);saveDone()});
+ });
+ $('#search').value='';
+}
 $('#expandAll').onclick=()=>$$('.chapter').forEach(c=>c.classList.add('open'));
 $('#collapseAll').onclick=()=>$$('.chapter').forEach(c=>c.classList.remove('open'));
-$('#resetProg').onclick=()=>{if(confirm('Azzerare i capitoli segnati come studiati?')){done.clear();saveDone();$$('.chk input').forEach(c=>c.checked=false)}};
+$('#resetProg').onclick=()=>{if(confirm('Azzerare le unità segnate come studiate per questo libro?')){done.clear();saveDone();$$('.chk input').forEach(c=>c.checked=false)}};
 $('#search').addEventListener('input',e=>{const q=e.target.value.toLowerCase().trim();
  $$('.chapter').forEach(c=>{const hit=!q||c.dataset.search.includes(q);c.style.display=hit?'':'none';if(q&&hit)c.classList.add('open')});
  $$('.partlabel').forEach(p=>p.style.display=q?'none':'');});
-renderProgress();
 
-/* ---------- build scope selects ---------- */
-function fillScope(sel){sel.innerHTML='<option value="all">📖 Tutti i capitoli</option>'+
- DATA.map(c=>'<option value="'+c.id+'">'+c.id+'. '+c.title+'</option>').join('')}
-fillScope($('#cardScope'));fillScope($('#quizScope'));
+/* SCOPES */
+function fillScope(sel){sel.innerHTML='<option value="all">📖 Tutte le unità</option>'+
+ CUR.chapters.map(c=>'<option value="'+c.id+'">'+c.id+'. '+c.title+'</option>').join('')}
+function poolFor(scope){let arr=[];CUR.chapters.forEach(c=>{if(scope==='all'||+scope===c.id)c.domande.forEach(d=>arr.push({q:d[0],a:d[1],part:c.part,ch:c.id}))});return arr}
+function answersByPart(){const o={};CUR.chapters.forEach(c=>{(o[c.part]=o[c.part]||[]).push(...c.domande.map(d=>d[1]))});return o}
 
-function poolFor(scope){ // array of {q,a,part,ch}
- let arr=[];DATA.forEach(c=>{if(scope==='all'||+scope===c.id)c.domande.forEach(d=>arr.push({q:d[0],a:d[1],part:c.part,ch:c.id}))});return arr}
-const answersByPart={};DATA.forEach(c=>{(answersByPart[c.part]=answersByPart[c.part]||[]).push(...c.domande.map(d=>d[1]))});
-
-/* ---------- FLASHCARDS ---------- */
+/* FLASHCARDS */
 let deck=[],fi=0,fok=0,fno=0;const fcard=$('#fcard');
 function loadDeck(){deck=shuffle(poolFor($('#cardScope').value));fi=0;fok=0;fno=0;showCard()}
-function showCard(){fcard.classList.remove('flip');const c=deck[fi];
- $('#fcTag').textContent='Cap. '+c.ch+' · '+partName(c.part);
- $('#fcQ').textContent=c.q;$('#fcA').textContent=c.a;
+function showCard(){if(!deck.length)return;fcard.classList.remove('flip');const c=deck[fi];
+ $('#fcTag').textContent='Unità '+c.ch;$('#fcQ').textContent=c.q;$('#fcA').textContent=c.a;
  $('#fcCount').textContent='Carta '+(fi+1)+' di '+deck.length;
  $('#fcOk').textContent='✓ '+fok;$('#fcNo2').textContent='✗ '+fno;}
 fcard.onclick=()=>fcard.classList.toggle('flip');
 $('#fcNext').onclick=()=>{fi=(fi+1)%deck.length;showCard()};
 $('#fcPrev').onclick=()=>{fi=(fi-1+deck.length)%deck.length;showCard()};
-$('#fcYes').onclick=()=>{fok++;if(fi<deck.length-1){fi++;showCard()}else showCard()};
-$('#fcNo').onclick=()=>{fno++;if(fi<deck.length-1){fi++;showCard()}else showCard()};
-$('#cardShuffle').onclick=loadDeck;$('#cardRestart').onclick=loadDeck;
-$('#cardScope').onchange=loadDeck;
-loadDeck();
+$('#fcYes').onclick=()=>{fok++;if(fi<deck.length-1)fi++;showCard()};
+$('#fcNo').onclick=()=>{fno++;if(fi<deck.length-1)fi++;showCard()};
+$('#cardShuffle').onclick=loadDeck;$('#cardRestart').onclick=loadDeck;$('#cardScope').onchange=loadDeck;
 
-/* ---------- QUIZ ---------- */
+/* QUIZ */
 let quiz=[],qi=0,qscore=0,qwrong=[];
 $('#quizStart').onclick=startQuiz;
-$('#quizScope').onchange=()=>{if($('#quizArea').innerHTML) $('#quizArea').innerHTML=''};
 function startQuiz(){
- let pool=shuffle(poolFor($('#quizScope').value));
- const n=+$('#quizLen').value;if(n>0)pool=pool.slice(0,n);
- quiz=pool.map(item=>{
-  const distract=shuffle(answersByPart[item.part].filter(a=>a!==item.a)).slice(0,3);
-  return {q:item.q,correct:item.a,options:shuffle([item.a,...distract]),ch:item.ch};
- });
+ let pool=shuffle(poolFor($('#quizScope').value));const n=+$('#quizLen').value;if(n>0)pool=pool.slice(0,n);
+ const abp=answersByPart();
+ quiz=pool.map(item=>{const distract=shuffle(abp[item.part].filter(a=>a!==item.a)).slice(0,3);
+  return {q:item.q,correct:item.a,options:shuffle([item.a,...distract]),ch:item.ch};});
  qi=0;qscore=0;qwrong=[];renderQuestion();
 }
-function renderQuestion(){
- const area=$('#quizArea');
- if(qi>=quiz.length){renderResult();return}
+function renderQuestion(){const area=$('#quizArea');if(qi>=quiz.length){renderResult();return}
  const it=quiz[qi];
- area.innerHTML='<div class="quizbox">'+
-  '<div class="qprompt"><span class="qi">Domanda '+(qi+1)+'/'+quiz.length+'</span>'+it.q+'</div>'+
+ area.innerHTML='<div class="quizbox"><div class="qprompt"><span class="qi">Domanda '+(qi+1)+'/'+quiz.length+'</span>'+it.q+'</div>'+
   it.options.map((o,k)=>'<button class="opt" data-k="'+k+'">'+o+'</button>').join('')+
   '<div class="qfoot"><span class="score">Punteggio: '+qscore+'</span><span id="qnextWrap"></span></div></div>';
  area.querySelectorAll('.opt').forEach(btn=>btn.onclick=()=>{
-  area.querySelectorAll('.opt').forEach(b=>{b.disabled=true;
-   if(b.textContent===it.correct)b.classList.add('correct');});
-  if(btn.textContent===it.correct){qscore++;}
-  else{btn.classList.add('wrong');qwrong.push(it);}
+  area.querySelectorAll('.opt').forEach(b=>{b.disabled=true;if(b.textContent===it.correct)b.classList.add('correct');});
+  if(btn.textContent===it.correct){qscore++}else{btn.classList.add('wrong');qwrong.push(it)}
   $('.score').textContent='Punteggio: '+qscore;
   $('#qnextWrap').innerHTML='<button class="btn primary" id="qnext">'+(qi===quiz.length-1?'Vedi risultato':'Prossima ▶')+'</button>';
   $('#qnext').onclick=()=>{qi++;renderQuestion()};
  });
 }
-function renderResult(){
- const pct=Math.round(qscore/quiz.length*100);
- let msg = pct>=90?'Eccellente! Sei pronta per il test 🎉' : pct>=70?'Bene! Ancora un piccolo ripasso 💪' : pct>=50?'Ci sei quasi: rivedi gli argomenti sbagliati 📚' : 'Da riprendere con calma, cap. per cap. 🔁';
- let html='<div class="quizbox result"><div class="big">'+pct+'%</div>'+
-  '<div class="msg">'+qscore+' risposte giuste su '+quiz.length+'</div><div style="color:var(--muted);font-size:14px">'+msg+'</div>';
+function renderResult(){const pct=Math.round(qscore/quiz.length*100);
+ let msg=pct>=90?'Eccellente! Sei pronta per il test 🎉':pct>=70?'Bene! Ancora un piccolo ripasso 💪':pct>=50?'Ci sei quasi: rivedi gli argomenti sbagliati 📚':'Da riprendere con calma, unità per unità 🔁';
+ let html='<div class="quizbox result"><div class="big">'+pct+'%</div><div class="msg">'+qscore+' risposte giuste su '+quiz.length+'</div><div style="color:var(--muted);font-size:14px">'+msg+'</div>';
  if(qwrong.length){html+='<div class="wrongs"><div class="sec-h" style="color:var(--red)">Da rivedere ('+qwrong.length+')</div>'+
-  qwrong.map(w=>'<div class="w"><b>Cap. '+w.ch+'</b> — '+w.q+'<br><b>Risposta giusta:</b> '+w.correct+'</div>').join('')+'</div>';}
+  qwrong.map(w=>'<div class="w"><b>Unità '+w.ch+'</b> — '+w.q+'<br><b>Risposta giusta:</b> '+w.correct+'</div>').join('')+'</div>';}
  html+='<div style="margin-top:16px"><button class="btn primary" id="qretry">↺ Nuovo quiz</button></div></div>';
- $('#quizArea').innerHTML=html;
- $('#qretry').onclick=startQuiz;
+ $('#quizArea').innerHTML=html;$('#qretry').onclick=startQuiz;
 }
+
+/* SWITCH BOOK */
+function switchBook(id){
+ CUR=BOOKS.find(b=>b.id===id)||BOOKS[0];
+ $('#hTitle').textContent=CUR.header;$('#hSub').textContent=CUR.sub;
+ done=new Set(store.get('done_'+CUR.id,[]));
+ buildStudy();fillScope($('#cardScope'));fillScope($('#quizScope'));loadDeck();$('#quizArea').innerHTML='';renderProgress();
+ store.set('lastBook',CUR.id);
+}
+$('#bookSel').addEventListener('change',e=>switchBook(e.target.value));
+const last=store.get('lastBook','democrazia');$('#bookSel').value=last;switchBook(last);
 
 </script>
 </body>
