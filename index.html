@@ -5,109 +5,186 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>A scuola di democrazia — Ripasso interattivo</title>
 <style>
-  :root{
-    --green:#3aaa35; --green-d:#2d8a29; --red:#e2342b; --ink:#1e2430;
-    --muted:#5b6472; --bg:#f4f7f3; --card:#ffffff; --line:#e4e9e2;
-    --chip:#eef6ec; --yellow:#fff7d6; --yellow-b:#f2d873;
-  }
-  *{box-sizing:border-box}
-  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-       background:var(--bg);color:var(--ink);line-height:1.55}
-  a{color:var(--green-d)}
-  .wrap{max-width:920px;margin:0 auto;padding:0 18px 80px}
-  header.top{background:linear-gradient(135deg,var(--green),var(--green-d));color:#fff;padding:34px 18px 30px}
-  header.top .inner{max-width:920px;margin:0 auto}
-  header.top h1{margin:0 0 4px;font-size:30px;letter-spacing:.3px}
-  header.top .sub{font-size:15px;opacity:.95;margin:0}
-  header.top .book{margin-top:14px;font-size:13px;opacity:.9;border-top:1px solid rgba(255,255,255,.25);padding-top:12px}
-  .toolbar{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line);
-           padding:10px 0;margin-bottom:8px}
-  .toolbar .inner{max-width:920px;margin:0 auto;padding:0 18px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-  .btn{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:7px 14px;
-       font-size:13px;cursor:pointer;transition:.15s}
-  .btn:hover{border-color:var(--green);color:var(--green-d)}
-  .btn.primary{background:var(--green);color:#fff;border-color:var(--green)}
-  .btn.primary:hover{background:var(--green-d);color:#fff}
-  .progress{margin-left:auto;font-size:13px;color:var(--muted)}
-  .progress b{color:var(--green-d)}
-  .intro{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:14px 0 6px}
-  .intro h2{margin:0 0 8px;font-size:18px}
-  .intro p{margin:6px 0;font-size:14px;color:var(--muted)}
-  .partlabel{margin:26px 0 10px;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--green-d)}
-  .partlabel.eco{color:#c88a12}
-  .chapter{background:var(--card);border:1px solid var(--line);border-radius:14px;margin:12px 0;overflow:hidden;
-           box-shadow:0 1px 2px rgba(0,0,0,.03)}
-  .chead{display:flex;align-items:center;gap:14px;padding:16px 18px;cursor:pointer;user-select:none}
-  .chead:hover{background:#fafcf9}
-  .num{flex:none;width:38px;height:38px;border-radius:10px;background:var(--chip);color:var(--green-d);
-       font-weight:700;display:flex;align-items:center;justify-content:center;font-size:16px}
-  .chapter.eco .num{background:#fdf3df;color:#b57d10}
-  .ctitle{flex:1;font-size:17px;font-weight:650}
-  .ctitle small{display:block;font-weight:400;color:var(--muted);font-size:12.5px;margin-top:2px}
-  .chk{flex:none;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
-  .chk input{width:17px;height:17px;accent-color:var(--green)}
-  .arrow{flex:none;transition:transform .2s;color:var(--muted);font-size:13px}
-  .chapter.open .arrow{transform:rotate(90deg)}
-  .cbody{display:none;padding:0 18px 20px;border-top:1px solid var(--line)}
-  .chapter.open .cbody{display:block}
-  .sec-h{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--green-d);margin:18px 0 8px}
-  .chapter.eco .sec-h{color:#b57d10}
-  ul.points{margin:0;padding-left:20px}
-  ul.points li{margin:5px 0;font-size:14.5px}
-  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
-  .chip{background:var(--chip);color:var(--green-d);border-radius:999px;padding:4px 11px;font-size:12.5px;font-weight:500}
-  .chapter.eco .chip{background:#fdf3df;color:#b57d10}
-  .remember{background:var(--yellow);border:1px solid var(--yellow-b);border-radius:10px;padding:12px 14px;font-size:14px}
-  .remember b{color:#8a6d00}
-  .quiz{margin-top:6px}
-  .q{border:1px solid var(--line);border-radius:10px;margin:8px 0;overflow:hidden}
-  .q .qq{padding:11px 14px;cursor:pointer;font-size:14.5px;font-weight:550;display:flex;gap:10px;align-items:flex-start}
-  .q .qq:hover{background:#fafcf9}
-  .q .qn{flex:none;color:var(--green-d);font-weight:700}
-  .chapter.eco .q .qn{color:#b57d10}
-  .q .aa{display:none;padding:0 14px 12px 38px;font-size:14px;color:#26402a;background:#f3f9f1;border-top:1px dashed var(--line)}
-  .chapter.eco .q .aa{background:#fdf8ee;color:#5b4611}
-  .q.show .aa{display:block;padding-top:10px}
-  .q .aa b{color:var(--green-d)}
-  .chapter.eco .q .aa b{color:#b57d10}
-  .qtools{display:flex;gap:8px;margin:10px 0 2px}
-  .qtools .btn{padding:5px 12px;font-size:12.5px}
-  footer{max-width:920px;margin:30px auto 0;padding:16px 18px;color:var(--muted);font-size:12px;text-align:center}
-  .tip{font-size:12.5px;color:var(--muted);margin-top:4px}
-  @media(max-width:560px){header.top h1{font-size:23px}.ctitle{font-size:15px}}
+:root{
+ --green:#3aaa35;--green-d:#2d8a29;--red:#e2342b;--gold:#d99616;
+ --ink:#1e2430;--muted:#5b6472;--bg:#f4f7f3;--card:#fff;--line:#e4e9e2;
+ --chip:#eef6ec;--yellow:#fff7d6;--yellow-b:#f2d873;--shadow:0 1px 3px rgba(0,0,0,.06);
+}
+html[data-theme=dark]{
+ --ink:#e8ecf1;--muted:#9aa4b2;--bg:#12161d;--card:#1b2027;--line:#2b323c;
+ --chip:#1f2b22;--yellow:#2a2717;--yellow-b:#5c5320;--shadow:0 1px 3px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+ background:var(--bg);color:var(--ink);line-height:1.55;transition:background .2s,color .2s}
+header.top{background:linear-gradient(135deg,var(--green),var(--green-d));color:#fff;padding:26px 18px 18px}
+header.top .inner{max-width:960px;margin:0 auto;position:relative}
+header.top h1{margin:0;font-size:26px;letter-spacing:.3px}
+header.top .sub{font-size:14px;opacity:.95;margin:2px 0 0}
+.theme{position:absolute;top:0;right:0;background:rgba(255,255,255,.18);border:0;color:#fff;
+ width:38px;height:38px;border-radius:50%;cursor:pointer;font-size:17px}
+.tabs{max-width:960px;margin:0 auto;display:flex;gap:6px;padding:12px 18px 0;flex-wrap:wrap}
+.tab{flex:1;min-width:120px;border:1px solid var(--line);background:var(--card);color:var(--ink);
+ border-radius:12px 12px 0 0;padding:11px 10px;font-size:14.5px;font-weight:650;cursor:pointer;
+ display:flex;align-items:center;justify-content:center;gap:7px;border-bottom:0;opacity:.72;transition:.15s}
+.tab:hover{opacity:1}
+.tab.active{opacity:1;color:var(--green-d);box-shadow:inset 0 -3px 0 var(--green)}
+.progress-wrap{max-width:960px;margin:0 auto;padding:0 18px}
+.pbar{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin:12px 0 0}
+.pbar>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--green-d));transition:width .3s}
+.pmeta{font-size:12.5px;color:var(--muted);margin-top:5px;display:flex;justify-content:space-between}
+.wrap{max-width:960px;margin:0 auto;padding:10px 18px 90px}
+section.view{display:none}
+section.view.active{display:block}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0 6px}
+.btn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;
+ padding:8px 15px;font-size:13.5px;cursor:pointer;transition:.15s}
+.btn:hover{border-color:var(--green);color:var(--green-d)}
+.btn.primary{background:var(--green);color:#fff;border-color:var(--green)}
+.btn.primary:hover{background:var(--green-d);color:#fff}
+.sel,.search{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;
+ padding:9px 12px;font-size:14px}
+.search{flex:1;min-width:180px}
+/* study accordion */
+.partlabel{margin:22px 0 8px;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--green-d)}
+.partlabel.eco{color:var(--gold)}
+.chapter{background:var(--card);border:1px solid var(--line);border-radius:14px;margin:11px 0;overflow:hidden;box-shadow:var(--shadow)}
+.chead{display:flex;align-items:center;gap:13px;padding:15px 16px;cursor:pointer;user-select:none}
+.chead:hover{background:rgba(58,170,53,.05)}
+.num{flex:none;width:36px;height:36px;border-radius:10px;background:var(--chip);color:var(--green-d);font-weight:700;display:flex;align-items:center;justify-content:center;font-size:15px}
+.chapter.eco .num{background:var(--chip);color:var(--gold)}
+.ctitle{flex:1;font-size:16px;font-weight:650}
+.ctitle small{display:block;font-weight:400;color:var(--muted);font-size:12px;margin-top:2px}
+.chk{flex:none;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+.chk input{width:17px;height:17px;accent-color:var(--green)}
+.arrow{flex:none;transition:transform .2s;color:var(--muted);font-size:12px}
+.chapter.open .arrow{transform:rotate(90deg)}
+.cbody{display:none;padding:0 16px 18px;border-top:1px solid var(--line)}
+.chapter.open .cbody{display:block}
+.sec-h{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--green-d);margin:16px 0 7px}
+.chapter.eco .sec-h{color:var(--gold)}
+ul.points{margin:0;padding-left:19px}ul.points li{margin:5px 0;font-size:14px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{background:var(--chip);color:var(--green-d);border-radius:999px;padding:4px 11px;font-size:12.5px}
+.chapter.eco .chip{color:var(--gold)}
+.remember{background:var(--yellow);border:1px solid var(--yellow-b);border-radius:10px;padding:11px 13px;font-size:13.5px}
+.q{border:1px solid var(--line);border-radius:10px;margin:7px 0;overflow:hidden}
+.q .qq{padding:10px 13px;cursor:pointer;font-size:14px;font-weight:550;display:flex;gap:9px}
+.q .qq:hover{background:rgba(58,170,53,.05)}
+.q .qn{color:var(--green-d);font-weight:700}
+.chapter.eco .q .qn{color:var(--gold)}
+.q .aa{display:none;padding:0 13px 11px 34px;font-size:13.5px;color:var(--green-d);border-top:1px dashed var(--line)}
+.q.show .aa{display:block;padding-top:9px}
+/* flashcard */
+.fcstage{perspective:1200px;margin:18px 0}
+.fcard{position:relative;width:100%;min-height:250px;transition:transform .5s;transform-style:preserve-3d;cursor:pointer}
+.fcard.flip{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;border-radius:16px;border:1px solid var(--line);
+ background:var(--card);box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;justify-content:center;
+ padding:28px;text-align:center}
+.face .tag{position:absolute;top:14px;left:16px;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted)}
+.face .hint{position:absolute;bottom:14px;font-size:11.5px;color:var(--muted)}
+.face.front .txt{font-size:19px;font-weight:600}
+.back{transform:rotateY(180deg);background:linear-gradient(160deg,var(--chip),var(--card))}
+.back .txt{font-size:16px;color:var(--green-d)}
+.fcnav{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap}
+.counter{font-size:13px;color:var(--muted);min-width:80px;text-align:center}
+.tally{display:flex;gap:14px;justify-content:center;margin-top:12px;font-size:13px}
+.tally .ok{color:var(--green-d);font-weight:650}.tally .no{color:var(--red);font-weight:650}
+/* quiz */
+.quizbox{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:var(--shadow);margin-top:16px}
+.qprompt{font-size:17px;font-weight:600;margin:4px 0 14px}
+.qprompt .qi{color:var(--green-d);font-weight:700;margin-right:6px}
+.opt{display:block;width:100%;text-align:left;border:1.5px solid var(--line);background:var(--card);color:var(--ink);
+ border-radius:11px;padding:12px 14px;margin:8px 0;font-size:14px;cursor:pointer;transition:.12s}
+.opt:hover:not(:disabled){border-color:var(--green);background:rgba(58,170,53,.05)}
+.opt.correct{border-color:var(--green);background:rgba(58,170,53,.14);font-weight:600}
+.opt.wrong{border-color:var(--red);background:rgba(226,52,43,.12)}
+.opt:disabled{cursor:default}
+.qfoot{display:flex;justify-content:space-between;align-items:center;margin-top:14px;font-size:14px}
+.score{font-weight:650;color:var(--green-d)}
+.result{text-align:center;padding:14px}
+.result .big{font-size:44px;font-weight:800;color:var(--green-d)}
+.result .msg{font-size:16px;margin:6px 0 4px}
+.wrongs{text-align:left;margin-top:16px}
+.wrongs .w{border-left:3px solid var(--red);padding:6px 12px;margin:9px 0;font-size:13.5px;background:rgba(226,52,43,.05);border-radius:0 8px 8px 0}
+.wrongs .w b{color:var(--green-d)}
+.intro{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px 18px;margin:14px 0 4px;font-size:13.5px;color:var(--muted)}
+.intro b{color:var(--ink)}
+footer{max-width:960px;margin:24px auto 0;padding:14px 18px;color:var(--muted);font-size:11.5px;text-align:center}
+@media(max-width:560px){header.top h1{font-size:21px}.ctitle{font-size:14.5px}.tab{min-width:0;font-size:13px;padding:10px 6px}}
 </style>
 </head>
 <body>
 <header class="top">
-  <div class="inner">
-    <h1>A scuola di democrazia</h1>
-    <p class="sub">Ripasso interattivo · Lezioni di Diritto ed Economia · 1° biennio</p>
-    <div class="book">G. Zagrebelsky · C. Trucco · G. Bacceli — Le Monnier / Mondadori Education, 3ª edizione (2023) · 15 capitoli · sintesi, parole chiave e 10 domande con risposte per ogni capitolo.</div>
-  </div>
+ <div class="inner">
+  <button class="theme" id="themeBtn" title="Tema chiaro/scuro">🌙</button>
+  <h1>A scuola di democrazia</h1>
+  <p class="sub">Ripasso interattivo · Diritto ed Economia · 1° biennio · Zagrebelsky–Trucco–Bacceli</p>
+ </div>
 </header>
-
-<div class="toolbar">
-  <div class="inner">
-    <button class="btn primary" id="expandAll">Apri tutti</button>
-    <button class="btn" id="collapseAll">Chiudi tutti</button>
-    <button class="btn" id="hideAllAns">Nascondi tutte le risposte</button>
-    <span class="progress">Studiati: <b id="doneCount">0</b>/15</span>
-  </div>
+<div class="tabs">
+ <button class="tab active" data-tab="study">📚 Studia</button>
+ <button class="tab" data-tab="cards">🔀 Flashcard</button>
+ <button class="tab" data-tab="quiz">✅ Quiz</button>
+</div>
+<div class="progress-wrap">
+ <div class="pbar"><span id="pbarFill"></span></div>
+ <div class="pmeta"><span id="pText">0 / 15 capitoli segnati come studiati</span><span id="pPct">0%</span></div>
 </div>
 
 <div class="wrap">
-  <div class="intro">
-    <h2>Come usare questo ripasso</h2>
-    <p>Il libro è diviso in <b>15 capitoli</b>: i primi 9 di <b>Diritto</b>, gli ultimi 6 di <b>Economia</b>. Clicca su un capitolo per aprirlo.</p>
-    <p>Per ogni capitolo trovi: <b>Sintesi</b> (i punti chiave), <b>Parole chiave</b> da sapere a memoria, un riquadro giallo <b>“Come ricordarlo”</b> con trucchi mnemonici, e <b>10 domande</b>. Clicca una domanda per vedere la risposta.</p>
-    <p class="tip">Metodo consigliato per il test: leggi la sintesi → ripeti le parole chiave ad alta voce → rispondi alle 10 domande <i>senza</i> guardare, poi controlla. Spunta ✓ il capitolo quando lo sai. <span style="color:#c33">Nota:</span> i titoli seguono il programma standard di Diritto ed Economia; l'ordine può variare di poco dalla tua edizione cartacea.</p>
+ <!-- STUDY -->
+ <section class="view active" id="study">
+  <div class="intro">Leggi la <b>sintesi</b>, ripeti le <b>parole chiave</b>, guarda il trucco <b>“Come ricordarlo”</b>, poi prova le <b>10 domande</b> (clicca per la risposta). Spunta ✓ quando sai un capitolo: i progressi restano salvati sul tuo dispositivo.</div>
+  <div class="toolbar">
+   <input class="search" id="search" placeholder="🔍 Cerca un argomento o una parola chiave…">
+   <button class="btn primary" id="expandAll">Apri tutti</button>
+   <button class="btn" id="collapseAll">Chiudi tutti</button>
+   <button class="btn" id="resetProg">Azzera progressi</button>
   </div>
-  <div id="app"></div>
-</div>
+  <div id="studyList"></div>
+ </section>
 
-<footer>
-  Materiale di studio generato per il ripasso personale · basato su “A scuola di democrazia” (Zagrebelsky, Trucco, Bacceli).
-</footer>
+ <!-- FLASHCARDS -->
+ <section class="view" id="cards">
+  <div class="intro">Modalità <b>flashcard</b>: leggi la domanda, prova a rispondere a mente, poi <b>clicca la carta</b> per girarla. Segna se la sapevi o no per capire dove ripassare.</div>
+  <div class="toolbar">
+   <select class="sel" id="cardScope"></select>
+   <button class="btn" id="cardShuffle">🔀 Mescola</button>
+   <button class="btn" id="cardRestart">↺ Ricomincia</button>
+  </div>
+  <div class="fcstage"><div class="fcard" id="fcard">
+   <div class="face front"><div class="tag" id="fcTag"></div><div class="txt" id="fcQ"></div><div class="hint">clicca per girare</div></div>
+   <div class="face back"><div class="tag">Risposta</div><div class="txt" id="fcA"></div><div class="hint">clicca per tornare</div></div>
+  </div></div>
+  <div class="fcnav">
+   <button class="btn" id="fcPrev">◀ Indietro</button>
+   <button class="btn" id="fcNo">✗ Non lo sapevo</button>
+   <button class="btn" id="fcYes">✓ Lo sapevo</button>
+   <button class="btn" id="fcNext">Avanti ▶</button>
+  </div>
+  <div class="counter" id="fcCount" style="margin-top:10px"></div>
+  <div class="tally"><span class="ok" id="fcOk">✓ 0</span><span class="no" id="fcNo2">✗ 0</span></div>
+ </section>
+
+ <!-- QUIZ -->
+ <section class="view" id="quiz">
+  <div class="intro">Mettiti alla prova con un <b>quiz a scelta multipla</b>. Scegli l'argomento e quante domande fare: avrai il <b>punteggio finale</b> e l'elenco degli errori con le risposte giuste.</div>
+  <div class="toolbar" id="quizSetup">
+   <select class="sel" id="quizScope"></select>
+   <select class="sel" id="quizLen">
+    <option value="5">5 domande</option>
+    <option value="10" selected>10 domande</option>
+    <option value="20">20 domande</option>
+    <option value="0">Tutte</option>
+   </select>
+   <button class="btn primary" id="quizStart">▶ Inizia quiz</button>
+  </div>
+  <div id="quizArea"></div>
+ </section>
+</div>
+<footer>Materiale di studio per il ripasso personale · basato su “A scuola di democrazia” (Zagrebelsky, Trucco, Bacceli).</footer>
 
 <script>
 const DATA=[
@@ -451,64 +528,136 @@ const DATA=[
   ["Cos'è lo sviluppo sostenibile?","Uno sviluppo che soddisfa i bisogni del presente senza compromettere quelli delle generazioni future."]]}
 ];
 
-const app=document.getElementById('app');
-const done=new Set();
-let lastPart="";
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const store={get(k,d){try{const v=localStorage.getItem('sdd_'+k);return v==null?d:JSON.parse(v)}catch(e){return d}},
+ set(k,v){try{localStorage.setItem('sdd_'+k,JSON.stringify(v))}catch(e){}}};
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const partName=p=>p==='DIRITTO'?'Diritto':'Economia';
 
-DATA.forEach(ch=>{
-  if(ch.part!==lastPart){
-    const pl=document.createElement('div');
-    pl.className='partlabel'+(ch.part==="ECONOMIA"?' eco':'');
-    pl.textContent=(ch.part==="DIRITTO"?'Parte 1 — Diritto':'Parte 2 — Economia');
-    app.appendChild(pl);
-    lastPart=ch.part;
-  }
-  const eco=ch.part==="ECONOMIA";
-  const div=document.createElement('div');
-  div.className='chapter'+(eco?' eco':'');
-  const points=ch.sintesi.map(p=>`<li>${p}</li>`).join('');
-  const chips=ch.parole.map(p=>`<span class="chip">${p}</span>`).join('');
-  const quiz=ch.domande.map((d,i)=>`
-    <div class="q">
-      <div class="qq"><span class="qn">${i+1}.</span><span>${d[0]}</span></div>
-      <div class="aa"><b>Risposta:</b> ${d[1]}</div>
-    </div>`).join('');
-  div.innerHTML=`
-    <div class="chead">
-      <div class="num">${ch.id}</div>
-      <div class="ctitle">${ch.title}<small>${ch.sub}</small></div>
-      <label class="chk" onclick="event.stopPropagation()"><input type="checkbox" data-id="${ch.id}"> so</label>
-      <div class="arrow">▶</div>
-    </div>
-    <div class="cbody">
-      <div class="sec-h">Sintesi — punti chiave</div>
-      <ul class="points">${points}</ul>
-      <div class="sec-h">Parole chiave</div>
-      <div class="chips">${chips}</div>
-      <div class="sec-h">Come ricordarlo</div>
-      <div class="remember">${ch.ricorda}</div>
-      <div class="sec-h">10 domande di verifica</div>
-      <div class="qtools">
-        <button class="btn showAll">Mostra tutte le risposte</button>
-        <button class="btn hideAll">Nascondi</button>
-      </div>
-      <div class="quiz">${quiz}</div>
-    </div>`;
-  app.appendChild(div);
+/* ---------- THEME ---------- */
+const themeBtn=$('#themeBtn');
+function applyTheme(t){document.documentElement.dataset.theme=t;themeBtn.textContent=t==='dark'?'☀️':'🌙';store.set('theme',t)}
+applyTheme(store.get('theme','light'));
+themeBtn.onclick=()=>applyTheme(document.documentElement.dataset.theme==='dark'?'light':'dark');
 
-  div.querySelector('.chead').addEventListener('click',()=>div.classList.toggle('open'));
-  div.querySelectorAll('.q .qq').forEach(q=>q.addEventListener('click',()=>q.parentElement.classList.toggle('show')));
-  div.querySelector('.showAll').addEventListener('click',()=>div.querySelectorAll('.q').forEach(q=>q.classList.add('show')));
-  div.querySelector('.hideAll').addEventListener('click',()=>div.querySelectorAll('.q').forEach(q=>q.classList.remove('show')));
-  div.querySelector('.chk input').addEventListener('change',e=>{
-    if(e.target.checked)done.add(ch.id);else done.delete(ch.id);
-    document.getElementById('doneCount').textContent=done.size;
-  });
+/* ---------- TABS ---------- */
+$$('.tab').forEach(t=>t.onclick=()=>{
+ $$('.tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');
+ $$('.view').forEach(v=>v.classList.remove('active'));$('#'+t.dataset.tab).classList.add('active');
 });
 
-document.getElementById('expandAll').addEventListener('click',()=>document.querySelectorAll('.chapter').forEach(c=>c.classList.add('open')));
-document.getElementById('collapseAll').addEventListener('click',()=>document.querySelectorAll('.chapter').forEach(c=>c.classList.remove('open')));
-document.getElementById('hideAllAns').addEventListener('click',()=>document.querySelectorAll('.q').forEach(q=>q.classList.remove('show')));
+/* ---------- PROGRESS ---------- */
+let done=new Set(store.get('done',[]));
+function saveDone(){store.set('done',[...done]);renderProgress()}
+function renderProgress(){
+ const pct=Math.round(done.size/DATA.length*100);
+ $('#pbarFill').style.width=pct+'%';
+ $('#pText').textContent=done.size+' / '+DATA.length+' capitoli segnati come studiati';
+ $('#pPct').textContent=pct+'%';
+}
+
+/* ---------- STUDY ---------- */
+const list=$('#studyList');let lastPart='';
+DATA.forEach(ch=>{
+ if(ch.part!==lastPart){const pl=document.createElement('div');
+  pl.className='partlabel'+(ch.part==='ECONOMIA'?' eco':'');
+  pl.textContent=ch.part==='DIRITTO'?'Parte 1 — Diritto':'Parte 2 — Economia';
+  list.appendChild(pl);lastPart=ch.part;}
+ const eco=ch.part==='ECONOMIA'?' eco':'';
+ const div=document.createElement('div');div.className='chapter'+eco;div.dataset.search=(ch.title+' '+ch.sub+' '+ch.parole.join(' ')+' '+ch.sintesi.join(' ')).toLowerCase();
+ div.innerHTML=
+  '<div class="chead"><div class="num">'+ch.id+'</div>'+
+  '<div class="ctitle">'+ch.title+'<small>'+ch.sub+'</small></div>'+
+  '<label class="chk" onclick="event.stopPropagation()"><input type="checkbox" '+(done.has(ch.id)?'checked':'')+'> so</label>'+
+  '<div class="arrow">▶</div></div>'+
+  '<div class="cbody"><div class="sec-h">Sintesi — punti chiave</div><ul class="points">'+
+  ch.sintesi.map(p=>'<li>'+p+'</li>').join('')+'</ul>'+
+  '<div class="sec-h">Parole chiave</div><div class="chips">'+ch.parole.map(p=>'<span class="chip">'+p+'</span>').join('')+'</div>'+
+  '<div class="sec-h">Come ricordarlo</div><div class="remember">'+ch.ricorda+'</div>'+
+  '<div class="sec-h">10 domande di verifica</div><div class="quiz">'+
+  ch.domande.map((d,i)=>'<div class="q"><div class="qq"><span class="qn">'+(i+1)+'.</span><span>'+d[0]+'</span></div><div class="aa"><b>Risposta:</b> '+d[1]+'</div></div>').join('')+'</div></div>';
+ list.appendChild(div);
+ div.querySelector('.chead').addEventListener('click',()=>div.classList.toggle('open'));
+ div.querySelectorAll('.q .qq').forEach(q=>q.addEventListener('click',()=>q.parentElement.classList.toggle('show')));
+ div.querySelector('.chk input').addEventListener('change',e=>{e.target.checked?done.add(ch.id):done.delete(ch.id);saveDone()});
+});
+$('#expandAll').onclick=()=>$$('.chapter').forEach(c=>c.classList.add('open'));
+$('#collapseAll').onclick=()=>$$('.chapter').forEach(c=>c.classList.remove('open'));
+$('#resetProg').onclick=()=>{if(confirm('Azzerare i capitoli segnati come studiati?')){done.clear();saveDone();$$('.chk input').forEach(c=>c.checked=false)}};
+$('#search').addEventListener('input',e=>{const q=e.target.value.toLowerCase().trim();
+ $$('.chapter').forEach(c=>{const hit=!q||c.dataset.search.includes(q);c.style.display=hit?'':'none';if(q&&hit)c.classList.add('open')});
+ $$('.partlabel').forEach(p=>p.style.display=q?'none':'');});
+renderProgress();
+
+/* ---------- build scope selects ---------- */
+function fillScope(sel){sel.innerHTML='<option value="all">📖 Tutti i capitoli</option>'+
+ DATA.map(c=>'<option value="'+c.id+'">'+c.id+'. '+c.title+'</option>').join('')}
+fillScope($('#cardScope'));fillScope($('#quizScope'));
+
+function poolFor(scope){ // array of {q,a,part,ch}
+ let arr=[];DATA.forEach(c=>{if(scope==='all'||+scope===c.id)c.domande.forEach(d=>arr.push({q:d[0],a:d[1],part:c.part,ch:c.id}))});return arr}
+const answersByPart={};DATA.forEach(c=>{(answersByPart[c.part]=answersByPart[c.part]||[]).push(...c.domande.map(d=>d[1]))});
+
+/* ---------- FLASHCARDS ---------- */
+let deck=[],fi=0,fok=0,fno=0;const fcard=$('#fcard');
+function loadDeck(){deck=shuffle(poolFor($('#cardScope').value));fi=0;fok=0;fno=0;showCard()}
+function showCard(){fcard.classList.remove('flip');const c=deck[fi];
+ $('#fcTag').textContent='Cap. '+c.ch+' · '+partName(c.part);
+ $('#fcQ').textContent=c.q;$('#fcA').textContent=c.a;
+ $('#fcCount').textContent='Carta '+(fi+1)+' di '+deck.length;
+ $('#fcOk').textContent='✓ '+fok;$('#fcNo2').textContent='✗ '+fno;}
+fcard.onclick=()=>fcard.classList.toggle('flip');
+$('#fcNext').onclick=()=>{fi=(fi+1)%deck.length;showCard()};
+$('#fcPrev').onclick=()=>{fi=(fi-1+deck.length)%deck.length;showCard()};
+$('#fcYes').onclick=()=>{fok++;if(fi<deck.length-1){fi++;showCard()}else showCard()};
+$('#fcNo').onclick=()=>{fno++;if(fi<deck.length-1){fi++;showCard()}else showCard()};
+$('#cardShuffle').onclick=loadDeck;$('#cardRestart').onclick=loadDeck;
+$('#cardScope').onchange=loadDeck;
+loadDeck();
+
+/* ---------- QUIZ ---------- */
+let quiz=[],qi=0,qscore=0,qwrong=[];
+$('#quizStart').onclick=startQuiz;
+$('#quizScope').onchange=()=>{if($('#quizArea').innerHTML) $('#quizArea').innerHTML=''};
+function startQuiz(){
+ let pool=shuffle(poolFor($('#quizScope').value));
+ const n=+$('#quizLen').value;if(n>0)pool=pool.slice(0,n);
+ quiz=pool.map(item=>{
+  const distract=shuffle(answersByPart[item.part].filter(a=>a!==item.a)).slice(0,3);
+  return {q:item.q,correct:item.a,options:shuffle([item.a,...distract]),ch:item.ch};
+ });
+ qi=0;qscore=0;qwrong=[];renderQuestion();
+}
+function renderQuestion(){
+ const area=$('#quizArea');
+ if(qi>=quiz.length){renderResult();return}
+ const it=quiz[qi];
+ area.innerHTML='<div class="quizbox">'+
+  '<div class="qprompt"><span class="qi">Domanda '+(qi+1)+'/'+quiz.length+'</span>'+it.q+'</div>'+
+  it.options.map((o,k)=>'<button class="opt" data-k="'+k+'">'+o+'</button>').join('')+
+  '<div class="qfoot"><span class="score">Punteggio: '+qscore+'</span><span id="qnextWrap"></span></div></div>';
+ area.querySelectorAll('.opt').forEach(btn=>btn.onclick=()=>{
+  area.querySelectorAll('.opt').forEach(b=>{b.disabled=true;
+   if(b.textContent===it.correct)b.classList.add('correct');});
+  if(btn.textContent===it.correct){qscore++;}
+  else{btn.classList.add('wrong');qwrong.push(it);}
+  $('.score').textContent='Punteggio: '+qscore;
+  $('#qnextWrap').innerHTML='<button class="btn primary" id="qnext">'+(qi===quiz.length-1?'Vedi risultato':'Prossima ▶')+'</button>';
+  $('#qnext').onclick=()=>{qi++;renderQuestion()};
+ });
+}
+function renderResult(){
+ const pct=Math.round(qscore/quiz.length*100);
+ let msg = pct>=90?'Eccellente! Sei pronta per il test 🎉' : pct>=70?'Bene! Ancora un piccolo ripasso 💪' : pct>=50?'Ci sei quasi: rivedi gli argomenti sbagliati 📚' : 'Da riprendere con calma, cap. per cap. 🔁';
+ let html='<div class="quizbox result"><div class="big">'+pct+'%</div>'+
+  '<div class="msg">'+qscore+' risposte giuste su '+quiz.length+'</div><div style="color:var(--muted);font-size:14px">'+msg+'</div>';
+ if(qwrong.length){html+='<div class="wrongs"><div class="sec-h" style="color:var(--red)">Da rivedere ('+qwrong.length+')</div>'+
+  qwrong.map(w=>'<div class="w"><b>Cap. '+w.ch+'</b> — '+w.q+'<br><b>Risposta giusta:</b> '+w.correct+'</div>').join('')+'</div>';}
+ html+='<div style="margin-top:16px"><button class="btn primary" id="qretry">↺ Nuovo quiz</button></div></div>';
+ $('#quizArea').innerHTML=html;
+ $('#qretry').onclick=startQuiz;
+}
+
 </script>
 </body>
 </html>
